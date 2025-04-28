@@ -9,7 +9,7 @@ const Footer = () => {
                     
                     <div>
                         <h3 className="text-gray-800 font-semibold mb-2">InvoiceGen</h3>
-                        <p>Simplify your invoicing process with our easy-to-use tool.</p>
+                        <p>Simplify your invoicing process with our easy-to-use tools.</p>
                         <p className="mt-2">&copy; {new Date().getFullYear()} InvoiceGen. All rights reserved.</p>
                     </div>
 
