@@ -27,7 +27,7 @@ const Login = () => {
                     id="firstName"
                     name="firstName"
                     type="text"
-                    placeholder="John"
+                    placeholder="saim"
                     
                     required
                   />
