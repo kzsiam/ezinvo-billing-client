@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 
 
@@ -15,11 +15,230 @@ import { Controller, useForm } from 'react-hook-form';
 
 const CreateInvoice = () => {
 
-    const { register, handleSubmit, control } = useForm();
+    const { register, handleSubmit } = useForm();
+
+    const countries = {
+        us: "U.S.A",
+        ca: "Canada",
+        gb: "United Kingdom",
+        au: "Australia",
+        de: "Germany",
+        fr: "France",
+        in: "India",
+        aw: "Aruba",
+        af: "Afghanistan",
+        ao: "Angola",
+        ai: "Anguilla",
+        ax: "Åland Islands",
+        al: "Albania",
+        ad: "Andorra",
+        ae: "United Arab Emirates",
+        ar: "Argentina",
+        am: "Armenia",
+        as: "American Samoa",
+        aq: "Antarctica",
+        tf: "French Southern Territories",
+        ag: "Antigua and Barbuda",
+        at: "Austria",
+        az: "Azerbaijan",
+        bi: "Burundi",
+        be: "Belgium",
+        bj: "Benin",
+        bq: "Bonaire, Sint Eustatius and Saba",
+        bf: "Burkina Faso",
+        bd: "Bangladesh",
+        bg: "Bulgaria",
+        bh: "Bahrain",
+        bs: "Bahamas",
+        ba: "Bosnia and Herzegovina",
+        bl: "Saint Barthélemy",
+        by: "Belarus",
+        bz: "Belize",
+        bm: "Bermuda",
+        bo: "Bolivia, Plurinational State of",
+        br: "Brazil",
+        bb: "Barbados",
+        bn: "Brunei Darussalam",
+        bt: "Bhutan",
+        bv: "Bouvet Island",
+        bw: "Botswana",
+        cf: "Central African Republic",
+        cc: "Cocos (Keeling) Islands",
+        ch: "Switzerland",
+        cl: "Chile",
+        cn: "China",
+        ci: "Côte d'Ivoire",
+        cm: "Cameroon",
+        cd: "Congo, The Democratic Republic of the",
+        cg: "Congo",
+        ck: "Cook Islands",
+        co: "Colombia",
+        km: "Comoros",
+        cv: "Cabo Verde",
+        cr: "Costa Rica",
+        cu: "Cuba",
+        cw: "Curaçao",
+        cx: "Christmas Island",
+        ky: "Cayman Islands",
+        cy: "Cyprus",
+        cz: "Czechia",
+        dj: "Djibouti",
+        dm: "Dominica",
+        dk: "Denmark",
+        do: "Dominican Republic",
+        dz: "Algeria",
+        ec: "Ecuador",
+        eg: "Egypt",
+        er: "Eritrea",
+        eh: "Western Sahara",
+        es: "Spain",
+        ee: "Estonia",
+        et: "Ethiopia",
+        fi: "Finland",
+        fj: "Fiji",
+        fk: "Falkland Islands (Malvinas)",
+        fo: "Faroe Islands",
+        fm: "Micronesia, Federated States of",
+        ga: "Gabon",
+        ge: "Georgia",
+        gg: "Guernsey",
+        gh: "Ghana",
+        gi: "Gibraltar",
+        gn: "Guinea",
+        gp: "Guadeloupe",
+        gm: "Gambia",
+        gw: "Guinea-Bissau",
+        gq: "Equatorial Guinea",
+        gr: "Greece",
+        gd: "Grenada",
+        gl: "Greenland",
+        gt: "Guatemala",
+        gf: "French Guiana",
+        gu: "Guam",
+        gy: "Guyana",
+        hk: "Hong Kong",
+        hm: "Heard Island and McDonald Islands",
+        hn: "Honduras",
+        hr: "Croatia",
+        ht: "Haiti",
+        hu: "Hungary",
+        id: "Indonesia",
+        im: "Isle of Man",
+        io: "British Indian Ocean Territory",
+        ie: "Ireland",
+        ir: "Iran, Islamic Republic of",
+        iq: "Iraq",
+        is: "Iceland",
+        il: "Israel",
+        it: "Italy",
+        jm: "Jamaica",
+        je: "Jersey",
+        jo: "Jordan",
+        jp: "Japan",
+        kz: "Kazakhstan",
+        ke: "Kenya",
+        kg: "Kyrgyzstan",
+        kh: "Cambodia",
+        ki: "Kiribati",
+        kn: "Saint Kitts and Nevis",
+        kr: "Korea, Republic of",
+        kw: "Kuwait",
+        la: "Lao People's Democratic Republic",
+        lb: "Lebanon",
+        lr: "Liberia",
+        ly: "Libya",
+        lc: "Saint Lucia",
+        li: "Liechtenstein",
+        lk: "Sri Lanka",
+        ls: "Lesotho",
+        lt: "Lithuania",
+        lu: "Luxembourg",
+        lv: "Latvia",
+        mo: "Macao",
+        mf: "Saint Martin (French part)",
+        ma: "Morocco",
+        mc: "Monaco",
+        md: "Moldova, Republic of",
+        mg: "Madagascar",
+        mv: "Maldives",
+        mx: "Mexico",
+        mh: "Marshall Islands",
+        mk: "North Macedonia",
+        ml: "Mali",
+        mt: "Malta",
+        mm: "Myanmar",
+        me: "Montenegro",
+        mn: "Mongolia",
+        mp: "Northern Mariana Islands",
+        mz: "Mozambique",
+        mr: "Mauritania",
+        ms: "Montserrat",
+        mq: "Martinique",
+        mu: "Mauritius",
+        mw: "Malawi",
+        my: "Malaysia",
+        yt: "Mayotte",
+        na: "Namibia",
+        nc: "New Caledonia",
+        ne: "Niger",
+        nf: "Norfolk Island",
+        ng: "Nigeria",
+        ni: "Nicaragua",
+        nu: "Niue",
+        nl: "Netherlands",
+        no: "Norway",
+        np: "Nepal",
+        nr: "Nauru",
+        nz: "New Zealand",
+        om: "Oman",
+        pk: "Pakistan",
+        pa: "Panama",
+        pn: "Pitcairn",
+        pe: "Peru",
+        ph: "Philippines",
+        pw: "Palau",
+        pg: "Papua New Guinea",
+        pl: "Poland",
+        pr: "Puerto Rico",
+        kp: "Korea, Democratic People's Republic of",
+        pt: "Portugal",
+        py: "Paraguay",
+        ps: "Palestine, State of",
+        pf: "French Polynesia",
+        qa: "Qatar",
+        re: "Réunion",
+        ro: "Romania",
+        ru: "Russian Federation",
+        rw: "Rwanda",
+        sa: "Saudi Arabia",
+        sd: "Sudan",
+        sn: "Senegal",
+        sg: "Singapore",
+        gs: "South Georgia and the South Sandwich Islands",
+        sh: "Saint Helena, Ascension and Tristan da Cunha",
+        sj: "Svalbard and Jan Mayen",
+        sb: "Solomon Islands",
+        sl: "Sierra Leone"
+    };
 
     const [items, setItems] = useState([
         { name: "lorem iupsum", quantity: 1, rate: 0, tax: 0 },
     ]);
+
+
+    let subtotal = 0;
+    let totalTax = 0;
+
+    items.forEach(item => {
+        subtotal += item.quantity * item.rate;
+        totalTax += item.tax;
+    });
+
+    const grandTotal = subtotal + totalTax;
+
+    console.log("Subtotal:", subtotal);   
+    console.log("Total Tax:", totalTax);   
+    console.log("Grand Total:", grandTotal);
 
     const handleChange = (index, field, value) => {
         const updated = [...items];
@@ -34,9 +253,28 @@ const CreateInvoice = () => {
         setItems([...items, { name: "", quantity: 1, rate: 0, tax: 0 }]);
     };
 
+
+
     const handleSave = (data) => {
+
+        const uploadedImg = data.img?.[0]
+        const formData = new FormData()
+        formData.append("image", uploadedImg)
+        const url = 'https://api.imgbb.com/1/upload?key=2f177d823c979a4d1225992db4bb006b';
+        fetch(url,{
+            method:"POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(imgData => {
+            if(imgData.success){
+                const invoiceData = {
+                    
+                }
+            }
+        })
         // console.log("Saved items:", items);
-        console.log(data);
+        
 
         // You can also send `items` to a backend or store it in localStorage here
     };
@@ -47,7 +285,8 @@ const CreateInvoice = () => {
     };
 
     const calculateAmount = (item) => {
-        return item.quantity * (item.rate + item.tax);
+        const rateAndTax = item.rate * item.quantity;
+        return (rateAndTax + item.tax);
     };
 
 
@@ -71,6 +310,7 @@ const CreateInvoice = () => {
 
 
 
+
     const [startDate, setStartDate] = useState(new Date());
     return (
         <div className="p-6 my-20 max-w-4xl mx-auto space-y-6">
@@ -87,7 +327,7 @@ const CreateInvoice = () => {
                                     >
                                         Upload Image
                                     </label>
-                                    <input {...register("image")}
+                                    <input {...register("img")}
                                         type="file"
                                         id="image-upload"
                                         accept="image/*"
@@ -120,7 +360,7 @@ const CreateInvoice = () => {
 
                         <div>
                             <div className=" text-sm">
-                                <div className="">
+                                <div className=" mb-1">
                                     <Input {...register("myCompanyName")}
                                         id=""
                                         placeholder="Your Company"
@@ -128,7 +368,7 @@ const CreateInvoice = () => {
                                         required
                                     />
                                 </div>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("myName")}
                                         id="name"
                                         placeholder="Your Name"
@@ -136,14 +376,14 @@ const CreateInvoice = () => {
                                         required
                                     />
                                 </div>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("myCompanyAddress")}
                                         id="name"
                                         placeholder="Company's Address"
                                         className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
                                     />
                                 </div>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("myCity")}
                                         id="name"
                                         placeholder="City, State Zip"
@@ -152,73 +392,23 @@ const CreateInvoice = () => {
                                     />
                                 </div>
                                 <div>
-                                    <Select>
-                                        <SelectTrigger className="w-[180px] border-0 shadow-none">
-                                            <SelectValue placeholder="Select Country" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-
-                                                <SelectItem value="us">U.S.A</SelectItem>
-                                                <SelectItem value="ca">Canada</SelectItem>
-                                                <SelectItem value="gb">United Kingdom</SelectItem>
-                                                <SelectItem value="au">Australia</SelectItem>
-                                                <SelectItem value="de">Germany</SelectItem>
-                                                <SelectItem value="fr">France</SelectItem>
-                                                <SelectItem value="it">Italy</SelectItem>
-                                                <SelectItem value="es">Spain</SelectItem>
-                                                <SelectItem value="br">Brazil</SelectItem>
-                                                <SelectItem value="mx">Mexico</SelectItem>
-                                                <SelectItem value="in">India</SelectItem>
-                                                <SelectItem value="cn">China</SelectItem>
-                                                <SelectItem value="jp">Japan</SelectItem>
-                                                <SelectItem value="kr">South Korea</SelectItem>
-                                                <SelectItem value="za">South Africa</SelectItem>
-                                                <SelectItem value="ng">Nigeria</SelectItem>
-                                                <SelectItem value="eg">Egypt</SelectItem>
-                                                <SelectItem value="ru">Russia</SelectItem>
-                                                <SelectItem value="tr">Turkey</SelectItem>
-                                                <SelectItem value="sa">Saudi Arabia</SelectItem>
-                                                <SelectItem value="ar">Argentina</SelectItem>
-                                                <SelectItem value="cl">Chile</SelectItem>
-                                                <SelectItem value="co">Colombia</SelectItem>
-                                                <SelectItem value="ve">Venezuela</SelectItem>
-                                                <SelectItem value="pk">Pakistan</SelectItem>
-                                                <SelectItem value="bd">Bangladesh</SelectItem>
-                                                <SelectItem value="id">Indonesia</SelectItem>
-                                                <SelectItem value="vn">Vietnam</SelectItem>
-                                                <SelectItem value="th">Thailand</SelectItem>
-                                                <SelectItem value="my">Malaysia</SelectItem>
-                                                <SelectItem value="ph">Philippines</SelectItem>
-                                                <SelectItem value="ir">Iran</SelectItem>
-                                                <SelectItem value="iq">Iraq</SelectItem>
-                                                <SelectItem value="uae">United Arab Emirates</SelectItem>
-                                                <SelectItem value="qa">Qatar</SelectItem>
-                                                <SelectItem value="kw">Kuwait</SelectItem>
-                                                <SelectItem value="af">Afghanistan</SelectItem>
-                                                <SelectItem value="np">Nepal</SelectItem>
-                                                <SelectItem value="lk">Sri Lanka</SelectItem>
-                                                <SelectItem value="ke">Kenya</SelectItem>
-                                                <SelectItem value="gh">Ghana</SelectItem>
-                                                <SelectItem value="tz">Tanzania</SelectItem>
-                                                <SelectItem value="ug">Uganda</SelectItem>
-                                                <SelectItem value="et">Ethiopia</SelectItem>
-                                                <SelectItem value="pl">Poland</SelectItem>
-                                                <SelectItem value="se">Sweden</SelectItem>
-                                                <SelectItem value="no">Norway</SelectItem>
-                                                <SelectItem value="fi">Finland</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                    <select className='mx-2 shadow-none border-transparent focus:border-cyan-700 focus:outline-none text-gray-500' {...register("yourCountry")} id="country">
+                                        <option value="">Select Country</option>
+                                        {Object.entries(countries).map(([code, name]) => (
+                                            <option key={code} value={code}>
+                                                {name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
                         {/* Bill To */}
-                        <div className="grid grid-cols-2 gap-6 text-sm">
+                        <div className="grid grid-cols-2 gap-6 text-sm mt-15">
                             <div className=" text-sm">
                                 <h4 className="font-semibold">Bill To:</h4>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("clientsCompanyName")}
                                         id="name"
                                         placeholder="Your Clients Company"
@@ -226,7 +416,7 @@ const CreateInvoice = () => {
                                         required
                                     />
                                 </div>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("clientsName")}
                                         id="name"
                                         placeholder="Your Clients Name"
@@ -234,7 +424,7 @@ const CreateInvoice = () => {
                                         required
                                     />
                                 </div>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("clientsCompanyAddress")}
                                         id="name"
                                         placeholder="Client Company's Address"
@@ -242,82 +432,22 @@ const CreateInvoice = () => {
                                         required
                                     />
                                 </div>
-                                <div className="">
+                                <div className="mb-1">
                                     <Input {...register("clientsCity")}
                                         id="name"
                                         placeholder="City, State Zip"
                                         className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
                                     />
                                 </div>
-                                <div>
-                                    <select {...register("select")} defaultValue="Pick a browser" className="select">
-                                        <option disabled={true}>Pick a browser</option>
-                                        <option>Chrome</option>
-                                        <option>FireFox</option>
-                                        <option>Safari</option>
+                                <div className='mb-5 '>
+                                    <select className='mx-2 shadow-none border-transparent focus:border-cyan-700 focus:outline-none text-gray-500' {...register("clientsCountry")} id="country">
+                                        <option value="">Select Country</option>
+                                        {Object.entries(countries).map(([code, name]) => (
+                                            <option key={code} value={code}>
+                                                {name}
+                                            </option>
+                                        ))}
                                     </select>
-                                    <Controller name='country' control={control} defaultValue="" render={({ field }) => (
-                                        <Select onValueChange={field.onChange} value={field.value} >
-                                            <SelectTrigger className="w-[180px] border-0 shadow-none">
-                                                <SelectValue placeholder="Select Country" />
-                                            </SelectTrigger>
-                                            <SelectContent >
-                                                <SelectGroup>
-
-                                                    <SelectItem value="us">U.S.A</SelectItem>
-                                                    <SelectItem value="ca">Canada</SelectItem>
-                                                    <SelectItem value="gb">United Kingdom</SelectItem>
-                                                    <SelectItem value="au">Australia</SelectItem>
-                                                    <SelectItem value="de">Germany</SelectItem>
-                                                    <SelectItem value="fr">France</SelectItem>
-                                                    <SelectItem value="it">Italy</SelectItem>
-                                                    <SelectItem value="es">Spain</SelectItem>
-                                                    <SelectItem value="br">Brazil</SelectItem>
-                                                    <SelectItem value="mx">Mexico</SelectItem>
-                                                    <SelectItem value="in">India</SelectItem>
-                                                    <SelectItem value="cn">China</SelectItem>
-                                                    <SelectItem value="jp">Japan</SelectItem>
-                                                    <SelectItem value="kr">South Korea</SelectItem>
-                                                    <SelectItem value="za">South Africa</SelectItem>
-                                                    <SelectItem value="ng">Nigeria</SelectItem>
-                                                    <SelectItem value="eg">Egypt</SelectItem>
-                                                    <SelectItem value="ru">Russia</SelectItem>
-                                                    <SelectItem value="tr">Turkey</SelectItem>
-                                                    <SelectItem value="sa">Saudi Arabia</SelectItem>
-                                                    <SelectItem value="ar">Argentina</SelectItem>
-                                                    <SelectItem value="cl">Chile</SelectItem>
-                                                    <SelectItem value="co">Colombia</SelectItem>
-                                                    <SelectItem value="ve">Venezuela</SelectItem>
-                                                    <SelectItem value="pk">Pakistan</SelectItem>
-                                                    <SelectItem value="bd">Bangladesh</SelectItem>
-                                                    <SelectItem value="id">Indonesia</SelectItem>
-                                                    <SelectItem value="vn">Vietnam</SelectItem>
-                                                    <SelectItem value="th">Thailand</SelectItem>
-                                                    <SelectItem value="my">Malaysia</SelectItem>
-                                                    <SelectItem value="ph">Philippines</SelectItem>
-                                                    <SelectItem value="ir">Iran</SelectItem>
-                                                    <SelectItem value="iq">Iraq</SelectItem>
-                                                    <SelectItem value="uae">United Arab Emirates</SelectItem>
-                                                    <SelectItem value="qa">Qatar</SelectItem>
-                                                    <SelectItem value="kw">Kuwait</SelectItem>
-                                                    <SelectItem value="af">Afghanistan</SelectItem>
-                                                    <SelectItem value="np">Nepal</SelectItem>
-                                                    <SelectItem value="lk">Sri Lanka</SelectItem>
-                                                    <SelectItem value="ke">Kenya</SelectItem>
-                                                    <SelectItem value="gh">Ghana</SelectItem>
-                                                    <SelectItem value="tz">Tanzania</SelectItem>
-                                                    <SelectItem value="ug">Uganda</SelectItem>
-                                                    <SelectItem value="et">Ethiopia</SelectItem>
-                                                    <SelectItem value="pl">Poland</SelectItem>
-                                                    <SelectItem value="se">Sweden</SelectItem>
-                                                    <SelectItem value="no">Norway</SelectItem>
-                                                    <SelectItem value="fi">Finland</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    )}>
-
-                                    </Controller>
                                 </div>
                             </div>
 
@@ -401,7 +531,7 @@ const CreateInvoice = () => {
                                         00
                                     </div> */}
                                         <div className="text-right font-semibold text-sm pr-2">
-                                            ${calculateAmount(item).toFixed(2)}
+                                            {calculateAmount(item).toFixed(2)}
                                         </div>
                                         <Button
                                             variant="ghost"
@@ -427,14 +557,14 @@ const CreateInvoice = () => {
                         {/* Totals */}
                         <div className="text-sm space-y-1 text-right">
                             <p>
-                                <strong>Sub Total:</strong> $200.00
+                                <strong>Sub Total: ${subtotal}</strong>
                             </p>
                             <p>
-                                <strong>TAX (12%):</strong> $24.00
+                                <strong>TAX :</strong> ${totalTax}
                             </p>
                             <div className="flex justify-end items-center gap-2">
                                 <strong className="text-base">TOTAL</strong>
-                                <Input className="w-32 text-right font-semibold text-lg" value="$224.00" readOnly />
+                                <Input className="w-32 text-right font-semibold text-lg" value={grandTotal} readOnly />
                             </div>
                         </div>
 
