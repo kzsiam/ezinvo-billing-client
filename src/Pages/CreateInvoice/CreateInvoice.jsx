@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem, SelectLabel } from '@/components/ui/select';
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import { AuthContext } from '@/Contexts/AuthProvider';
+import { useNavigate } from 'react-router';
 
 
 
@@ -15,7 +17,10 @@ import { useForm } from 'react-hook-form';
 
 const CreateInvoice = () => {
 
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, control } = useForm();
+
+    const {user} = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const countries = {
         us: "U.S.A",
@@ -236,10 +241,6 @@ const CreateInvoice = () => {
 
     const grandTotal = subtotal + totalTax;
 
-    console.log("Subtotal:", subtotal);   
-    console.log("Total Tax:", totalTax);   
-    console.log("Grand Total:", grandTotal);
-
     const handleChange = (index, field, value) => {
         const updated = [...items];
         updated[index][field] =
@@ -257,24 +258,82 @@ const CreateInvoice = () => {
 
     const handleSave = (data) => {
 
-        const uploadedImg = data.img?.[0]
+        //formatted date
+        const formattedDueDate = data.dueDate
+            ? `${String(data.dueDate.getDate()).padStart(2, '0')}-${String(
+                data.dueDate.getMonth() + 1
+            ).padStart(2, '0')}-${String(data.dueDate.getFullYear()).slice(-2)}`
+            : "";
+        const formattedIssueDate = data.dueDate
+            ? `${String(data.issueDate.getDate()).padStart(2, '0')}-${String(
+                data.issueDate.getMonth() + 1
+            ).padStart(2, '0')}-${String(data.issueDate.getFullYear()).slice(-2)}`
+            : "";
+
+        //image uploaded and insert data 
+        
+        const uploadedImg = data.img[0]
         const formData = new FormData()
         formData.append("image", uploadedImg)
-        const url = 'https://api.imgbb.com/1/upload?key=2f177d823c979a4d1225992db4bb006b';
-        fetch(url,{
-            method:"POST",
+        const url = 'https://api.imgbb.com/1/upload?key=16612783c60b3795ca45e1987bb6938c';
+        fetch(url, {
+            method: "POST",
             body: formData
         })
-        .then(res => res.json())
-        .then(imgData => {
-            if(imgData.success){
-                const invoiceData = {
-                    
+            .then(res => res.json())
+            .then(imgData => {
+                if (imgData.success) {
+                    const invoiceData = {
+                        invoiceLogo: imgData.data.display_url,
+                        myCity: data.myCity,
+                        myCompanyAddress: data.myCompanyAddress,
+                        myCompanyName: data.myCompanyName,
+                        myName: data.myName,
+                        myEmail:data.myEmail,
+                        myCountry: data.myCountry,
+
+                        invoiceNumber: data.invoiceNumber,
+                        dueDate: formattedDueDate,
+                        issueDate: formattedIssueDate,
+
+                        clientsCity: data.clientsCity,
+                        clientsCompanyAddress: data.clientsCompanyAddress,
+                        clientsCompanyName: data.clientsCompanyName,
+                        clientsName: data.clientsName,
+                        clientsEmail: data.clientsEmail,
+                        clientsCountry: data.clientsCountry,
+
+                        itemDetails: items,
+                        subtotal,
+                        totalTax,
+                        grandTotal,
+                        notes:data.notes,
+                        termsCondition:data.termsCondition,
+
+                        
+                        email:user?.email
+
+
+                    }
+
+                    fetch('http://localhost:1000/invoiceCollections',{
+                        method:"POST",
+                        headers:{
+                            "content-type": "application/json"
+                        },
+                        body: JSON.stringify(invoiceData)
+                    })
+                    .then(res => res.json())
+                    .then(data =>{
+                        if(data.acknowledged){
+                            navigate('/myInvoice')
+                        }
+                    })
+
                 }
-            }
-        })
-        // console.log("Saved items:", items);
-        
+            })
+
+
 
         // You can also send `items` to a backend or store it in localStorage here
     };
@@ -289,29 +348,9 @@ const CreateInvoice = () => {
         return (rateAndTax + item.tax);
     };
 
-
-    const [preview, setPreview] = useState(null);
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+    
 
 
-
-        const img = new Image();
-        const objectUrl = URL.createObjectURL(file);
-        img.src = objectUrl;
-
-        img.onload = () => {
-
-            setPreview(objectUrl);
-        };
-    };
-
-
-
-
-    const [startDate, setStartDate] = useState(new Date());
     return (
         <div className="p-6 my-20 max-w-4xl mx-auto space-y-6">
             <Card>
@@ -321,32 +360,11 @@ const CreateInvoice = () => {
                         <div className="text-right flex justify-between">
                             <div className="flex flex-col items-center space-y-2">
                                 <div className="flex flex-col items-center gap-4">
-                                    <label
-                                        htmlFor="image-upload"
-                                        className="cursor-pointer px-4 py-2 bg-cyan-700 text-white rounded hover:bg-cyan-800"
-                                    >
-                                        Upload Image
-                                    </label>
-                                    <input {...register("img")}
-                                        type="file"
-                                        id="image-upload"
+                                    <input
+                                        className='border-2 px-2 py-2 rounded-sm'
+                                        type='file'
                                         accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="hidden w-16"
-                                        required
-                                    />
-
-
-
-                                    {preview && (
-                                        <div className="w-[100px] h-[100px] border shadow rounded overflow-hidden">
-                                            <img
-                                                src={preview}
-                                                alt="Uploaded Preview"
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                    )}
+                                        {...register("img")}/>
                                 </div>
 
                             </div>
@@ -377,6 +395,14 @@ const CreateInvoice = () => {
                                     />
                                 </div>
                                 <div className="mb-1">
+                                    <Input {...register("myEmail")}
+                                        id="name"
+                                        placeholder="Your Email"
+                                        className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-1">
                                     <Input {...register("myCompanyAddress")}
                                         id="name"
                                         placeholder="Company's Address"
@@ -392,7 +418,7 @@ const CreateInvoice = () => {
                                     />
                                 </div>
                                 <div>
-                                    <select className='mx-2 shadow-none border-transparent focus:border-cyan-700 focus:outline-none text-gray-500' {...register("yourCountry")} id="country">
+                                    <select className='mx-2 shadow-none border-transparent focus:border-cyan-700 focus:outline-none text-gray-500' {...register("myCountry")} id="country">
                                         <option value="">Select Country</option>
                                         {Object.entries(countries).map(([code, name]) => (
                                             <option key={code} value={code}>
@@ -411,7 +437,7 @@ const CreateInvoice = () => {
                                 <div className="mb-1">
                                     <Input {...register("clientsCompanyName")}
                                         id="name"
-                                        placeholder="Your Clients Company"
+                                        placeholder="Clients Company"
                                         className="border h-7 mb-2 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
                                         required
                                     />
@@ -419,7 +445,15 @@ const CreateInvoice = () => {
                                 <div className="mb-1">
                                     <Input {...register("clientsName")}
                                         id="name"
-                                        placeholder="Your Clients Name"
+                                        placeholder="Clients Name"
+                                        className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-1">
+                                    <Input {...register("clientsEmail")}
+                                        id="name"
+                                        placeholder="Clients Email"
                                         className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
                                         required
                                     />
@@ -454,37 +488,51 @@ const CreateInvoice = () => {
                             <div>
                                 <div className='flex items-center'>
                                     <strong>Invoice#:</strong>
-                                    <Input {...register("invoiceNumber")}
+                                    <Input type="number" {...register("invoiceNumber")}
                                         id="name"
                                         placeholder="INV-12"
                                         className="border w-4xl h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none"
                                         required
                                     />
                                 </div>
-                                <p className="flex items-center gap-2 r">
-                                    {/* <Input type='date' className="w-30"></Input> */}
+                                <div className="flex items-center gap-2 r">
                                     <strong>Issue Date:</strong>
-                                    <DatePicker className='w-20'
 
-                                        selected={startDate}
-                                        onChange={(date) => setStartDate(date)}
-                                        minDate={new Date()}
-                                        dateFormat={"dd-MM-yy"}
-
+                                    <Controller
+                                        name="issueDate"
+                                        control={control}
+                                        defaultValue={new Date()}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                className="w-20"
+                                                {...field}
+                                                selected={field.value}
+                                                onChange={(date) => field.onChange(date)}
+                                                minDate={new Date()}
+                                                dateFormat="dd-MM-yy"
+                                            />
+                                        )}
                                     />
-                                </p>
-                                <p className="flex items-center gap-2">
+                                </div>
+                                <div className="flex items-center gap-2">
 
                                     <strong >Due Date:  </strong>
-                                    <DatePicker className='w-20'
-
-                                        selected={startDate}
-                                        onChange={(date) => setStartDate(date)}
-                                        minDate={new Date()}
-                                        dateFormat={"dd-MM-yy"}
-
+                                    <Controller
+                                        name="dueDate"
+                                        control={control}
+                                        defaultValue={new Date()}
+                                        render={({ field }) => (
+                                            <DatePicker
+                                                className="w-20"
+                                                {...field}
+                                                selected={field.value}
+                                                onChange={(date) => field.onChange(date)}
+                                                minDate={new Date()}
+                                                dateFormat="dd-MM-yy"
+                                            />
+                                        )}
                                     />
-                                </p>
+                                </div>
                             </div>
 
                         </div>

@@ -3,8 +3,14 @@ import CreateInvoice from "@/Pages/CreateInvoice/CreateInvoice";
 import ForgetPassword from "@/Pages/ForgetPassword/ForgetPassword";
 import Home from "@/Pages/Home/Home";
 import Login from "@/Pages/Login/Login";
+import MyInvoices from "@/Pages/MyInvoices/MyInvoices";
 import Signup from "@/Pages/Signup/Signup";
 import { createBrowserRouter } from "react-router";
+import { PDFViewer } from '@react-pdf/renderer';
+import MyDocuments from "@/Pages/MyInvoices/MyDocuments";
+import PDFViewerPage from "@/Pages/MyInvoices/PDFViewerPage ";
+import PricingPlans from "@/Pages/PricingPlans/PricingPlans";
+import Profile from "@/Pages/Profile/Profile";
 
 export const router = createBrowserRouter([
     {
@@ -28,9 +34,31 @@ export const router = createBrowserRouter([
                 element:<ForgetPassword></ForgetPassword>
             },
             {
+                path:'/profile',
+                element:<Profile></Profile>
+            },
+            {
                 path:'/createInvoice',
                 element:<CreateInvoice></CreateInvoice>
-            }
+            },
+            {
+                path:'/myInvoices',
+                element:<MyInvoices></MyInvoices>
+            },
+            {
+                path:'/pdfViewerPage/:id',
+                loader: ({params}) => fetch(`http://localhost:1000/invoiceCollections/${params.id
+                }`),
+                element:<PDFViewerPage></PDFViewerPage>
+            },
+            {
+                path:'/pricingPlans',
+                element:<PricingPlans></PricingPlans>
+            },
         ]
-    }
+    },
+    {
+        path:'*',
+        element:<h1>page not found</h1>
+    },
 ])

@@ -24,10 +24,10 @@ const Navbar = () => {
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex gap-6 text-sm ">
                         <Link to='/createInvoice' className="hover:text-primary block">Create Invoice</Link>
-                        <Link to='/' className="hover:text-primary block">My Invoices</Link>
+                        <Link to='/myInvoices' className="hover:text-primary block">My Invoices</Link>
                         <Link to='/' className="hover:text-primary block">Dashboard</Link>
                         <Link to='/' className="hover:text-primary block">Clients</Link>
-                        <Link to='/' className="hover:text-primary block">Pricing</Link>
+                        <Link to='/pricingPlans' className="hover:text-primary block">Pricing</Link>
 
                     </nav>
 
@@ -46,7 +46,9 @@ const Navbar = () => {
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                       <Link to={'/profile'}>Profile</Link>
+                                        </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <Link>Settings</Link>
                                     </DropdownMenuItem>
@@ -106,10 +108,10 @@ const Navbar = () => {
                         {/* Menu Items */}
                         <nav className="flex  flex-col items-center space-y-6 text-black text-sm font-normal ">
                             <Link to='/createInvoice' className="hover:text-primary block">Create Invoice</Link>
-                            <Link href="#" className="hover:text-primary block">My Invoices</Link>
+                            <Link href="/myInvoices" className="hover:text-primary block">My Invoices</Link>
                             <Link href="#" className="hover:text-primary block">Dashboard</Link>
                             <Link href="#" className="hover:text-primary block">Clients</Link>
-                            <Link href="#" className="hover:text-primary block">Pricing</Link>
+                            <Link href="/pricingPlans" className="hover:text-primary block">Pricing</Link>
                         </nav>
                     </div>
                 )}

@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '@/Contexts/AuthProvider';
+import toast from 'react-hot-toast';
 
 const Signup = () => {
     const navigate = useNavigate()
-    const { createUser, updateUserInfo,emailVerification } = useContext(AuthContext)
+    const { createUser, updateUserInfo } = useContext(AuthContext)
     // console.log(user)
     const [isAccepted, setIsAccepted] = useState(false);
     const [passwordError, setPasswordError] = useState('');
@@ -22,19 +23,34 @@ const Signup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const handleSignup = (data) => {
-        emailVerification()
+        console.log(data)
+
+        const userData = {
+            fullName:data.fullName,
+            email:data.email,
+            userType:"",
+            mobileNumber:"",
+            profileImage: "",
+            gender:""
+        }
+
         if (data.password !== data.confirmPassword) {
             setPasswordError('password did not match')
         }
+
         if (data.password === data.confirmPassword) {
             createUser(data.email, data.password)
                 .then(result => {
                     handleUpdate(data.fullName)
-                    
-                    console.log(result.user)
-                    navigate('/')
+                    toast.success("email verification send in your email")
+                    // fetch("http://localhost:1000/usersCollection",{
+                    //     method: "POST",
+                    //     body:
+                    // })
+                    console.log(result.user.displayName)
+
                 })
-                .catch(error =>{
+                .catch(error => {
                     setSignupError(error.message)
                 })
         }
@@ -66,11 +82,11 @@ const Signup = () => {
                     <form onSubmit={handleSubmit(handleSignup)}>
                         <div className="grid w-full items-center gap-1.5 mb-5">
                             <Label htmlFor="email" className="text-sm text-gray-600"> Full Name </Label>
-                            <Input {...register("fullName",{ required: true, maxLength: 20 })} id="fullName"
+                            <Input {...register("fullName", { required: true, maxLength: 20 })} id="fullName"
                                 name="fullName"
                                 type="text"
                                 placeholder="EX: John Smith" className="bg-gray-100 text-gray-700 placeholder:text-gray-400 border-0 rounded-md" />
-                                {errors.fullName && <span className='text-red-600 mt-2'>Name is too long</span>}
+                            {errors.fullName && <span className='text-red-600 mt-2'>Name is too long</span>}
                         </div>
                         <div className="grid w-full items-center gap-1.5 mb-5">
                             <Label htmlFor="email" className="text-sm text-gray-600"> Email </Label>
@@ -80,21 +96,21 @@ const Signup = () => {
                                 placeholder="you@example.com"
 
                                 required className="bg-gray-100 text-gray-700 placeholder:text-gray-400 border-0 rounded-md" />
-                                {errors.email && <span className='text-red-600 mt-2'>{errors.email.message}</span>}
+                            {errors.email && <span className='text-red-600 mt-2'>{errors.email.message}</span>}
                         </div>
                         <div className="grid w-full items-center gap-1.5 mb-5">
                             <Label htmlFor="email" className="text-sm text-gray-600"> Password </Label>
-                            <Input {...register("password",{
-                                    required: "password is required",
-                                    minLength: { value: 8 },
-                                    pattern: { value: /(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, message: 'password must have uppercase number & special characters' }
-                                })} id="password"
+                            <Input {...register("password", {
+                                required: "password is required",
+                                minLength: { value: 8 },
+                                pattern: { value: /(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/, message: 'password must have uppercase number & special characters' }
+                            })} id="password"
                                 name="password"
                                 type="password"
                                 placeholder="********"
 
                                 required className="bg-gray-100 text-gray-700 placeholder:text-gray-400 border-0 rounded-md" />
-                                {errors.password && <span className='text-red-600 mt-2'>{errors.password.message}</span>}
+                            {errors.password && <span className='text-red-600 mt-2'>{errors.password.message}</span>}
                         </div>
                         <div className="grid w-full items-center gap-1.5 mb-5">
                             <Label htmlFor="email" className="text-sm text-gray-600"> Confirm Password </Label>
@@ -104,13 +120,13 @@ const Signup = () => {
                                 placeholder="********"
 
                                 required className="bg-gray-100 text-gray-700 placeholder:text-gray-400 border-0" />
-                                {
-                                    passwordError && <span className='text-red-600 mt-2'>{passwordError}</span>
-                                }
-                                {
-                                    signupError && <span className='text-red-600 mt-2'>{signupError.slice(9,50)}</span>
-                                }
-                
+                            {
+                                passwordError && <span className='text-red-600 mt-2'>{passwordError}</span>
+                            }
+                            {
+                                signupError && <span className='text-red-600 mt-2'>{signupError.slice(9, 50)}</span>
+                            }
+
                         </div>
                         <div className="flex mb-10 items-center space-x-2">
                             <label className="flex items-center space-x-2">
