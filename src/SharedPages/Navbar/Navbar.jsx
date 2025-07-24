@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -10,16 +10,55 @@ import { Menu, User, X } from 'lucide-react';
 import { Link } from 'react-router';
 import { AuthContext } from '@/Contexts/AuthProvider';
 
+import axios, { Axios } from 'axios';
+import { Avatar } from '@radix-ui/react-avatar';
+import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
+
 const Navbar = () => {
-    const { user,logout } = useContext(AuthContext)
-    console.log(user)
+    const { user, logout } = useContext(AuthContext)
+    // console.log(user)
+
+    const [dbUser, setDBuser] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+    
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
+                setDBuser(response.data)
+                setLoading(false)
+                setError(null)
+            }
+            catch (error) {
+                setError(error.message)
+            }
+            finally {
+                setLoading(false)
+            }
+
+        }
+
+        if (user?.email) {
+            fetchUsers()
+        }
+    }, [user?.email])
+
+    console.log(dbUser)
+
+    if (error) {
+        return <h1>data not found</h1>
+    }
+    
     return (
         <div className=''>
             <header className="w-full px-6 py-4 bg-white shadow-md fixed top-0 z-50 mb-20">
                 <div className="flex justify-between items-center container mx-auto">
                     {/* Logo / Brand */}
-                    <div className="text-xl font-bold ">EzInvo</div>
+                    <div className="text-xl font-bold "><Link to={"/"}>EzInvo</Link></div>
 
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex gap-6 text-sm ">
@@ -39,23 +78,29 @@ const Navbar = () => {
                                     !user && <Link to='/auth/login' className="hover:text-primary block">Login</Link>
                                 }
                                 {
-                                user && <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon">
-                                        <User className="w-5 h-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuItem>
-                                       <Link to={'/profile'}>Profile</Link>
-                                        </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Link>Settings</Link>
-                                    </DropdownMenuItem>
-                                    <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            }
+                                    user && <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon">
+                                                {/* <User className="w-5 h-5" /> */}
+                                                <Avatar>
+                                                    {
+                                                        dbUser.profileImage? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} />:<AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0,2).toUpperCase()}</AvatarFallback>
+                                                    }
+                                                    
+                                                </Avatar>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem>
+                                                <Link to={'/profile'}>Profile</Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <Link>Settings</Link>
+                                            </DropdownMenuItem>
+                                            <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                }
                                 <Button className='mx3 bg-cyan-700 text-white hover:bg-cyan-600'>
                                     Try it free
                                 </Button>
@@ -84,22 +129,31 @@ const Navbar = () => {
                             {
                                 !user && <Link to='/auth/login' className="hover:text-primary block">Login</Link>
                             }
-                            {
-                                user && <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
-                                            <User className="w-5 h-5" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Profile</DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <Link>Settings</Link>
-                                        </DropdownMenuItem>
-                                        <button onClick={logout}><DropdownMenuItem>Logout</DropdownMenuItem></button>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            }
+
+                             {
+                                    user && <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" size="icon">
+                                                {/* <User className="w-5 h-5" /> */}
+                                                <Avatar>
+                                                    {
+                                                        dbUser.profileImage? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} />:<AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0,2).toUpperCase()}</AvatarFallback>
+                                                    }
+                                                    
+                                                </Avatar>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem>
+                                                <Link to={'/profile'}>Profile</Link>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <Link>Settings</Link>
+                                            </DropdownMenuItem>
+                                            <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                }
                             <Button className='mx3 bg-cyan-700 text-white hover:bg-cyan-600'>
                                 Try it free
                             </Button>

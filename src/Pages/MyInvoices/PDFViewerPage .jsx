@@ -6,11 +6,14 @@ import { PDFViewer } from '@react-pdf/renderer';
 
 const PDFViewerPage = () => {
     const item = useLoaderData()
+    console.log(item)
     return (
         <div className="h-screen mt-20">
-            <PDFViewer width="100%" height="100%">
+            {
+                item && <PDFViewer width="100%" height="100%">
                 <MyDocuments item={item} />
             </PDFViewer>
+            }
         </div>
     );
 };

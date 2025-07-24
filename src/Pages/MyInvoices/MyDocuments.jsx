@@ -3,7 +3,7 @@ import React from 'react';
 
 const MyDocuments = ({ item }) => {
     const itemInfo = item.itemDetails;
-    console.log(item)
+    console.log(itemInfo)
 
     const styles = StyleSheet.create({
         page: {
@@ -151,7 +151,7 @@ const MyDocuments = ({ item }) => {
                     <Text style={styles.headOfCol}>Tax (%)</Text>
                     <Text style={styles.headOfCol}>Amount</Text>
                 </View>
-                {itemInfo.map((item, idx) => {
+                {Array.isArray(itemInfo) && itemInfo?.map((item, idx) => {
                     const amount = item.quantity * item.rate;
                     const taxAmount = (amount * item.tax) / 100;
                     const total = amount + taxAmount;

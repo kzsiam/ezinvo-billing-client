@@ -326,7 +326,7 @@ const CreateInvoice = () => {
                     .then(res => res.json())
                     .then(data =>{
                         if(data.acknowledged){
-                            navigate('/myInvoice')
+                            navigate('/myInvoices')
                         }
                     })
 

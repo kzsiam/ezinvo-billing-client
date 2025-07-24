@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -8,9 +8,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
+import { useContext } from 'react';
+import { AuthContext } from '@/Contexts/AuthProvider';
+import toast from 'react-hot-toast';
 
 const Login = () => {
+
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
+
+  const { register, handleSubmit } = useForm()
+  const { signInEmail } = useContext(AuthContext)
+  const [signinError, setSigninError] = useState(null)
+  const handleSignin = (data) => {
+    signInEmail(data.email, data.password)
+      .then(() => {
+        toast.success('welcome back')
+        navigate(from, { replace: true })
+
+      })
+      .catch(error => {
+        setSigninError(error.message)
+      })
+  }
   return (
     <div className="min-h-screen flex items-center justify-center  px-4">
       <Card className="w-full max-w-md ">
@@ -21,19 +44,22 @@ const Login = () => {
         </CardHeader>
         <CardContent>
 
-          <form>
+          <form onSubmit={handleSubmit(handleSignin)}>
             <div className="grid w-full items-center gap-1.5 mb-5">
               <Label htmlFor="email" className="text-sm text-gray-600"> Enter Email </Label>
-              <Input type="email" id="email" placeholder="Enter Email" className="bg-gray-100 text-gray-700 placeholder:text-gray-400 border-0 rounded-md" />
+              <Input {...register("email")} type="email" id="email" placeholder="Enter Email" className="bg-gray-100 text-gray-700 placeholder:text-gray-400 border-0 rounded-md" />
             </div>
             <div className="grid w-full items-center gap-1.5 mb-2">
               <Label htmlFor="password" className="text-sm text-gray-600"> Password </Label>
-              <Input id="password"
+              <Input {...register("password")} id="password"
                 name="password"
                 type="password"
                 placeholder="********"
 
                 required className="bg-gray-100 border-0 text-gray-700 placeholder:text-gray-400 rounded-md" />
+              {
+                signinError && <span className='text-red-600 mt-2'>{signinError}</span>
+              }
             </div>
 
             <div className="text-right mt-2 mb-5"> <Label className="text-sm hover:underline cursor-pointer"> <Link to="/forgetPassword">Forgot Password?</Link> </Label> </div>

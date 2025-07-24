@@ -1,85 +1,203 @@
-// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-// import { Button } from '@/components/ui/button';
-// import { Card, CardContent } from '@/components/ui/card';
-// import { Input } from '@/components/ui/input';
-// import { Label } from '@/components/ui/label';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-// import React, { useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AuthContext } from '@/Contexts/AuthProvider';
+import axios from 'axios';
+import React, { useContext, useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router';
+// import toast from 'react-hot-toast';
 
 
 
-// const Profile = () => {
-   
+const Profile = () => {
+
+    const { user, updateUserInfo } = useContext(AuthContext)
+    // console.log(user)
+    const navigate = useNavigate()
+
+    const [dbUser, setDBuser] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    const [profileImage, setProfileImage] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+
+    const { register, handleSubmit, control } = useForm();
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setProfileImage(file);
+        setPreviewUrl(URL.createObjectURL(file));
+        console.log(profileImage)
+    };
 
 
-//   const [profileImage, setProfileImage] = useState(null);
-//   const [previewUrl, setPreviewUrl] = useState(null);
 
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     setProfileImage(file);
-//     setPreviewUrl(URL.createObjectURL(file));
-//   };
-//     return (
-//         <div className='mt-40'> 
-        
-//             <Card className="max-w-4xl mx-auto mt-8 p-6 space-y-6 shadow rounded-xl">
-//                 <h1>Edit Profile</h1>
-//                 {/* Profile Image Upload */}
-//                 <div className="flex items-center gap-4">
-//                     <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200">
-//                         {previewUrl ? (
-//                             <img src={previewUrl} alt="Profile" className="w-full h-full object-cover" />
-//                         ) : (
-//                             <div className="w-full h-full flex items-center justify-center text-gray-500">No Image</div>
-//                         )}
-//                     </div>
-//                     <div>
-//                         <Input type="file" accept="image/*" onChange={handleImageChange} />
-//                     </div>
-//                 </div>
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
+                setDBuser(response.data)
+                setLoading(false);      // Start loading
+                setError(null);
+            }
 
-//                 {/* Form Fields */}
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//                     {/* Full Name */}
-//                     <div>
-//                         <Label>Full Name</Label>
-//                         <Input placeholder="Enter your name" defaultValue="KaZi SiAm" />
-//                     </div>
+            catch (error) {
+                setError(error.message)
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+        if (user?.email) {
+            fetchUsers()
+        }
+    }, [user?.email])
 
-//                     {/* Email (readonly) */}
-//                     <div>
-//                         <Label>Email Address <span className="text-blue-600 cursor-pointer text-sm ml-2">Change</span></Label>
-//                         <p className="mt-2 text-gray-600">md*********@gmail.com</p>
-//                     </div>
+    console.log(dbUser)
+    const handleInfoChange = (userInfoData) => {
+        // console.log(userInfoData)
+        const uploadedImg = userInfoData.profileImage[0]
+        const formData = new FormData()
+        formData.append("image", uploadedImg)
 
-//                     {/* Mobile */}
-//                     <div>
-//                         <Label>Mobile <span className="text-blue-600 cursor-pointer text-sm ml-2">Add</span></Label>
-//                         <p className="mt-2 text-gray-500">Please enter your mobile</p>
-//                     </div>
 
-//                     {/* Gender */}
-//                     <div>
-//                         <Label>Gender</Label>
-//                         <Select>
-//                             <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-//                             <SelectContent>
-//                                 <SelectItem value="male">Male</SelectItem>
-//                                 <SelectItem value="female">Female</SelectItem>
-//                                 <SelectItem value="other">Other</SelectItem>
-//                             </SelectContent>
-//                         </Select>
-//                     </div>
-//                 </div>
+        const url = 'https://api.imgbb.com/1/upload?key=16612783c60b3795ca45e1987bb6938c'
+        fetch(url, {
+            method: "POST",
+            body: formData
+        })
+            .then(res => res.json())
+            .then(imgData => {
+                if (imgData.data) {
+                    const updatedInfo = {
+                        name: userInfoData.name,
+                        phoneNumber: userInfoData.phoneNumber,
+                        gender: userInfoData.gender,
+                        photoUrl: imgData.data.display_url
+                    }
 
-//                 {/* Save Button */}
-//                 <div className="pt-4">
-//                     <Button className="bg-cyan-700 hover:bg-orange-600">SAVE CHANGES</Button>
-//                 </div>
-//             </Card>
-//         </div>
-//     );
-// };
+                    // console.log("updatedInfo", updatedInfo)
+                    handleUpdate(userInfoData.name, imgData.data.display_url, userInfoData.phoneNumber)
+                    
+                    fetch(`http://localhost:1000/usersCollection/${dbUser?._id}`, {
+                        method: "PATCH",
+                        headers: {
+                            "content-type": "application/json"
+                        },
+                        body: JSON.stringify(updatedInfo)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data.modifiedCount > 0){
+                            navigate("/")
+                            toast.success("Profile updated!")
+                        }
+                    })
+                }
 
-// export default Profile;
+            })
+    }
+
+    const handleUpdate = (name, profileImage, phoneNumber) => {
+        const profile = {
+            displayName: name,
+            phoneNumber: phoneNumber,
+            photoURL: profileImage
+        }
+        updateUserInfo(profile)
+            .then(() => {
+
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    if (loading) {
+        return <h1 className='mt-20'>loading......</h1>
+    }
+
+    if (error) return <div className='mt-20'>Error: {error}</div>;
+    return (
+        <div className='mt-40'>
+
+            <Card className="max-w-4xl mx-auto mt-8 p-6 space-y-6 shadow rounded-xl">
+                <h1>Edit Profile</h1>
+                <form onSubmit={handleSubmit(handleInfoChange)}>
+                    <div>
+                        {/* Profile Image Upload */}
+                        <div className="flex items-center gap-4 mb-10">
+                            <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200">
+                                {previewUrl ? (
+                                    <img src={previewUrl} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gray-500">No Image</div>
+                                )}
+                            </div>
+                            <div>
+                                <Input {...register("profileImage")} type="file" accept="image/*" onChange={handleImageChange} required />
+                            </div>
+                        </div>
+
+                        {/* Form Fields */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Full Name */}
+                            <div>
+                                <Label className="mb-2">Full Name</Label>
+                                <Input {...register("name")} className="border-0" placeholder="Enter your name" defaultValue={dbUser?.fullName} />
+                            </div>
+
+                            {/* Email (readonly) */}
+                            <div>
+                                <Label className="mb-2">Email Address <span className="text-blue-600 cursor-pointer text-sm ml-2">Verify Email</span></Label>
+                                <Input className="border-0 " placeholder="email" defaultValue={dbUser?.email} readOnly />
+                            </div>
+
+                            {/* Mobile */}
+                            <div>
+                                <Label className="mb-2">Mobile </Label>
+
+                                <Input {...register("phoneNumber")} className="border-0 " placeholder="Please enter your mobile" defaultValue={dbUser?.mobileNumber} />
+                            </div>
+
+                            {/* Gender */}
+                            <div>
+                                <Label className="mb-2">Gender</Label>
+                                <Controller
+                                    name="gender"
+                                    control={control}
+                                    defaultValue={dbUser?.gender}
+                                    render={({ field }) => (
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="male">Male</SelectItem>
+                                                <SelectItem value="female">Female</SelectItem>
+                                                <SelectItem value="other">Other</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Save Button */}
+                        <div className="pt-4">
+                            <Button className="bg-cyan-700 hover:bg-orange-600">SAVE CHANGES</Button>
+                        </div>
+                    </div>
+                </form>
+            </Card>
+        </div>
+    );
+};
+
+export default Profile;

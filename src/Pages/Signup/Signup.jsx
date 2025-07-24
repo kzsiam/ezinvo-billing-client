@@ -8,13 +8,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '@/Contexts/AuthProvider';
 import toast from 'react-hot-toast';
 
 const Signup = () => {
     const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || '/'
     const { createUser, updateUserInfo } = useContext(AuthContext)
     // console.log(user)
     const [isAccepted, setIsAccepted] = useState(false);
@@ -23,15 +25,15 @@ const Signup = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const handleSignup = (data) => {
-        console.log(data)
+        
 
         const userData = {
-            fullName:data.fullName,
-            email:data.email,
-            userType:"",
-            mobileNumber:"",
+            fullName: data.fullName,
+            email: data.email,
+            userType: "",
+            mobileNumber: "",
             profileImage: "",
-            gender:""
+            gender: ""
         }
 
         if (data.password !== data.confirmPassword) {
@@ -42,11 +44,22 @@ const Signup = () => {
             createUser(data.email, data.password)
                 .then(result => {
                     handleUpdate(data.fullName)
-                    toast.success("email verification send in your email")
-                    // fetch("http://localhost:1000/usersCollection",{
-                    //     method: "POST",
-                    //     body:
-                    // })
+                    toast.success(
+                        "Signup Successful! Please verify your email address to continue using our services. A verification link has been sent to your email. Access will remain restricted until verification is complete."
+                    );
+
+                    fetch("http://localhost:1000/usersCollection",{
+                        method: "POST",
+                         headers:{
+                            "content-type": "application/json"
+                        },
+                        body:JSON.stringify(userData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data)
+                        navigate(from,{replace:true})
+                    })
                     console.log(result.user.displayName)
 
                 })

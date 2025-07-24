@@ -1,6 +1,6 @@
 import app from '@/firebase/firebase.init';
 import React, { createContext, useEffect, useState } from 'react';
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signOut, updateProfile} from 'firebase/auth'
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, updateProfile} from 'firebase/auth'
 
 
 
@@ -10,12 +10,14 @@ const auth = getAuth(app)
 const AuthProvider = ({children}) => {
 
     const [user,setUser] = useState(null)
+    const [loader,setLoader] = useState(true)
 
 
     const createUser = (email,password) =>{
-        
+        setLoader(true)
        return  createUserWithEmailAndPassword(auth,email,password)
     }
+    
 
     const updateUserInfo = (profile) =>{
         return updateProfile(auth.currentUser,profile)
@@ -29,8 +31,13 @@ const AuthProvider = ({children}) => {
         return sendEmailVerification(auth.currentUser)
     }
 
+    const signInEmail = (email,password) =>{
+        setLoader(true)
+       return  signInWithEmailAndPassword(auth,email,password)
+    }
     useEffect(() =>{
         const unsubscribe = onAuthStateChanged(auth,currentUser =>{
+            setLoader(false)
             setUser(currentUser)
 
         })
@@ -41,7 +48,7 @@ const AuthProvider = ({children}) => {
     },[])
 
     const logout = () =>{
-        
+        setLoader(true)
         return signOut(auth)
     }
 
@@ -51,7 +58,9 @@ const AuthProvider = ({children}) => {
         user,
         logout,
         emailReset,
-        emailVerification
+        emailVerification,
+        signInEmail,
+        loader
     }
 
     return (

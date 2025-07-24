@@ -11,6 +11,7 @@ import MyDocuments from "@/Pages/MyInvoices/MyDocuments";
 import PDFViewerPage from "@/Pages/MyInvoices/PDFViewerPage ";
 import PricingPlans from "@/Pages/PricingPlans/PricingPlans";
 import Profile from "@/Pages/Profile/Profile";
+import PrivateRoute from "../PrivateRoute/PrivateRoute";
 
 export const router = createBrowserRouter([
     {
@@ -35,21 +36,21 @@ export const router = createBrowserRouter([
             },
             {
                 path:'/profile',
-                element:<Profile></Profile>
+                element:<PrivateRoute><Profile></Profile></PrivateRoute>
             },
             {
                 path:'/createInvoice',
-                element:<CreateInvoice></CreateInvoice>
+                element:<PrivateRoute><CreateInvoice></CreateInvoice></PrivateRoute>
             },
             {
                 path:'/myInvoices',
-                element:<MyInvoices></MyInvoices>
+                element:<PrivateRoute><MyInvoices></MyInvoices></PrivateRoute>
             },
             {
                 path:'/pdfViewerPage/:id',
                 loader: ({params}) => fetch(`http://localhost:1000/invoiceCollections/${params.id
                 }`),
-                element:<PDFViewerPage></PDFViewerPage>
+                element:<PrivateRoute><PDFViewerPage></PDFViewerPage></PrivateRoute>
             },
             {
                 path:'/pricingPlans',
