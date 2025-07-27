@@ -1,246 +1,246 @@
-// import React, { useContext, useEffect, useState } from 'react';
-// import {
-//     Table,
-//     TableBody,
-//     TableCell,
-//     TableHead,
-//     TableHeader,
-//     TableRow,
-// } from "@/components/ui/table"
-// import { Input } from "@/components/ui/input"
-// import { Button } from "@/components/ui/button"
-// import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
-// import { MoreHorizontal } from "lucide-react"
-// import { MdOutlineAdminPanelSettings } from "react-icons/md";
+import React, { useContext, useEffect, useState } from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
+import { MoreHorizontal } from "lucide-react"
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
-// import axios from 'axios';
-// import ConfirmationDialogue from '@/SharedPages/ConfirmationDialogue/ConfirmationDialogue';
-// import toast from 'react-hot-toast';
-// import { AuthContext } from '@/Contexts/AuthProvider';
+import axios from 'axios';
+import ConfirmationDialogue from '@/SharedPages/ConfirmationDialogue/ConfirmationDialogue';
+import toast from 'react-hot-toast';
+import { AuthContext } from '@/Contexts/AuthProvider';
 
-// const AllUsers = () => {
+const AllUsers = () => {
 
-//     const { user } = useContext(AuthContext)
-//     const [allUsers, setAllUsers] = useState([])
-//     const [loading, setLoading] = useState(true)
-//     const [error, setError] = useState(null)
-//     const [dbUser, setDBuser] = useState([])
-//     useEffect(() => {
-//         const fetchUsers = async () => {
-//             try {
-//                 const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
-//                 setDBuser(response.data)
-//                 setLoading(false);      // Start loading
-//                 setError(null);
-//             }
+    const { user } = useContext(AuthContext)
+    const [allUsers, setAllUsers] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [dbUser, setDBuser] = useState([])
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
+                setDBuser(response.data)
+                setLoading(false);      // Start loading
+                setError(null);
+            }
 
-//             catch (error) {
-//                 setError(error.message)
-//             }
-//             finally {
-//                 setLoading(false)
-//             }
-//         }
-//         if (user?.email) {
-//             fetchUsers()
-//         }
-//     }, [user?.email])
+            catch (error) {
+                setError(error.message)
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+        if (user?.email) {
+            fetchUsers()
+        }
+    }, [user?.email])
 
-//     const fetchUser = async () => {
-//         try {
-//             const res = await axios.get("http://localhost:1000/usersCollection")
-//             setAllUsers(res.data)
-//             setLoading(true)
-//             setError(null)
-//         }
-//         catch (error) {
-//             setError(error.message)
-//         }
-//         finally {
-//             setError(null)
-//             setLoading(false)
-//         }
-//     }
+    const fetchUser = async () => {
+        try {
+            const res = await axios.get("http://localhost:1000/usersCollection")
+            setAllUsers(res.data)
+            setLoading(true)
+            setError(null)
+        }
+        catch (error) {
+            setError(error.message)
+        }
+        finally {
+            setError(null)
+            setLoading(false)
+        }
+    }
 
-//     useEffect(() => {
-//         fetchUser()
-//     }, [])
+    useEffect(() => {
+        fetchUser()
+    }, [])
 
-//     const handleDeleteUser = (id) => {
-//         fetch(`http://localhost:1000/usersCollection/${id}`, {
-//             method: "DELETE",
-//             headers: {
+    const handleDeleteUser = (id) => {
+        fetch(`http://localhost:1000/usersCollection/${id}`, {
+            method: "DELETE",
+            headers: {
 
-//             }
+            }
 
-//         })
-//             .then(res => res.json())
-//             .then(data => {
-//                 console.log(data)
-//                 if (data.deletedCount > 0) {
-//                     fetchUser()
-//                     toast.success("deleted successfully")
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.deletedCount > 0) {
+                    fetchUser()
+                    toast.success("deleted successfully")
 
-//                 }
-//             })
-//     }
-//     const handleMakeAdmin = (id) => {
-//         fetch(`http://localhost:1000/makeAdmin/usersCollection/${id}`, {
-//             method: "PATCH",
-//             headers: {
+                }
+            })
+    }
+    const handleMakeAdmin = (id) => {
+        fetch(`http://localhost:1000/makeAdmin/usersCollection/${id}`, {
+            method: "PATCH",
+            headers: {
 
-//             }
+            }
 
-//         })
-//             .then(res => res.json())
-//             .then(data => {
-//                 console.log(data)
-//                 if (data.modifiedCount > 0) {
-//                     fetchUser()
-//                     toast.success('Make Admin Successfully')
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.modifiedCount > 0) {
+                    fetchUser()
+                    toast.success('Make Admin Successfully')
 
-//                 }
-//             })
-//     }
-//     const handleDeleteAdmin = (id) => {
-//         fetch(`http://localhost:1000/deleteAdmin/usersCollection/${id}`, {
-//             method: "PATCH",
-//             headers: {
+                }
+            })
+    }
+    const handleDeleteAdmin = (id) => {
+        fetch(`http://localhost:1000/deleteAdmin/usersCollection/${id}`, {
+            method: "PATCH",
+            headers: {
 
-//             }
+            }
 
-//         })
-//             .then(res => res.json())
-//             .then(data => {
-//                 console.log(data)
-//                 if (data.modifiedCount > 0) {
-//                     fetchUser()
-//                     toast.success('Delete Admin Successfully')
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                if (data.modifiedCount > 0) {
+                    fetchUser()
+                    toast.success('Delete Admin Successfully')
 
-//                 }
-//             })
-//     }
+                }
+            })
+    }
 
-//     console.log(allUsers)
+    console.log(allUsers)
 
-//     if (loading) {
-//         return <h1 className='mt-40'>loading...</h1>
-//     }
-//     if (error) {
-//         return <h1>error</h1>
-//     }
+    if (loading) {
+        return <h1 className='mt-40'>loading...</h1>
+    }
+    if (error) {
+        return <h1>error</h1>
+    }
 
 
-//     return (
-//         <div>
-//             <h1 className='lg:mx-20 mt-10'>EzInvo Users</h1>
+    return (
+        <div>
+            <h1 className='lg:mx-20 mt-10'>EzInvo Users</h1>
 
-//             <div className=" text-black p-6 lg:mx-62 mt-10 rounded-lg space-y-4">
-//                 <div className="flex justify-start items-center gap-2">
-//                     <Input
-//                         placeholder="Filter emails..."
-//                         className="w-64  border-zinc-700  placeholder:text-zinc-400"
-//                     />
-//                     <Button className="bg-cyan-700 hover:bg-cyan-600">Search</Button>
-//                 </div>
+            <div className=" text-black p-6 lg:mx-62 mt-10 rounded-lg space-y-4">
+                <div className="flex justify-start items-center gap-2">
+                    <Input
+                        placeholder="Filter emails..."
+                        className="w-64  border-zinc-700  placeholder:text-zinc-400"
+                    />
+                    <Button className="bg-cyan-700 hover:bg-cyan-600">Search</Button>
+                </div>
 
-//                 <Table className="border  rounded-lg">
-//                     <TableHeader>
-//                         <TableRow>
-//                             <TableHead >
-//                                 <h1 className="mx-5">#</h1>
-//                             </TableHead>
-//                             <TableHead>Name</TableHead>
-//                             <TableHead className="cursor-pointer">Email ⬍</TableHead>
-//                             <TableHead>User Type</TableHead>
-//                             <TableHead />
-//                         </TableRow>
-//                     </TableHeader>
-//                     <TableBody>
-//                         {allUsers.map((allUser, i) => (
-//                             <TableRow key={allUser._id}>
-//                                 <TableCell>
-//                                     <h1 className='mx-5'>{i + 1}</h1>
-//                                 </TableCell>
-//                                 <TableCell>
-//                                     <div className='flex items-center gap-2'>
+                <Table className="border  rounded-lg">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead >
+                                <h1 className="mx-5">#</h1>
+                            </TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead className="cursor-pointer">Email ⬍</TableHead>
+                            <TableHead>User Type</TableHead>
+                            <TableHead />
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {allUsers.map((allUser, i) => (
+                            <TableRow key={allUser._id}>
+                                <TableCell>
+                                    <h1 className='mx-5'>{i + 1}</h1>
+                                </TableCell>
+                                <TableCell>
+                                    <div className='flex items-center gap-2'>
                                         
-//                                         <h1>{allUser.fullName}</h1>
-//                                     </div>
+                                        <h1>{allUser.fullName}</h1>
+                                    </div>
 
-//                                 </TableCell>
-//                                 <TableCell>{allUser.email}</TableCell>
-//                                 <TableCell>{allUser?.role}</TableCell>
-//                                 <TableCell className="text-right">
+                                </TableCell>
+                                <TableCell>{allUser.email}</TableCell>
+                                <TableCell>{allUser?.role}</TableCell>
+                                <TableCell className="text-right">
 
-//                                     <DropdownMenu>
-//                                         <DropdownMenuTrigger asChild>
-//                                             <MoreHorizontal className="h-4 w-4 cursor-pointer " />
-//                                         </DropdownMenuTrigger>
-//                                         <DropdownMenuContent className="w-56" align="start">
-//                                             <DropdownMenuLabel>
-//                                                 {/* Make admin */}
-//                                                 {
-//                                                     allUser.role !== "admin"? <ConfirmationDialogue
-//                                                     title="Make Admin?"
-//                                                     message={`Are you sure you want to Make Admin ${allUser.fullName}? This action cannot be undone.`}
-//                                                     onConfirm={() => handleMakeAdmin(allUser._id)}
-//                                                     trigger={
-//                                                         <Button className="bg-cyan-700 hover:bg-cyan-600s w-24" size="sm">
-//                                                             Make Admin
-//                                                         </Button>
-//                                                     }
-//                                                 />:<ConfirmationDialogue
-//                                                     title="Delete Admin?"
-//                                                     message={`Are you sure you want to Delete Admin ${allUser.fullName}? This action cannot be undone.`}
-//                                                     onConfirm={() => handleDeleteAdmin(allUser._id)}
-//                                                     trigger={
-//                                                         <Button className="bg-cyan-700 hover:bg-cyan-600s w-24" size="sm">
-//                                                             Delete Admin
-//                                                         </Button>
-//                                                     }
-//                                                 />
-//                                                 }
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <MoreHorizontal className="h-4 w-4 cursor-pointer " />
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="w-56" align="start">
+                                            <DropdownMenuLabel>
+                                                {/* Make admin */}
+                                                {
+                                                    allUser.role !== "admin"? <ConfirmationDialogue
+                                                    title="Make Admin?"
+                                                    message={`Are you sure you want to Make Admin ${allUser.fullName}? This action cannot be undone.`}
+                                                    onConfirm={() => handleMakeAdmin(allUser._id)}
+                                                    trigger={
+                                                        <Button className="bg-cyan-700 hover:bg-cyan-600s w-24" size="sm">
+                                                            Make Admin
+                                                        </Button>
+                                                    }
+                                                />:<ConfirmationDialogue
+                                                    title="Delete Admin?"
+                                                    message={`Are you sure you want to Delete Admin ${allUser.fullName}? This action cannot be undone.`}
+                                                    onConfirm={() => handleDeleteAdmin(allUser._id)}
+                                                    trigger={
+                                                        <Button className="bg-cyan-700 hover:bg-cyan-600s w-24" size="sm">
+                                                            Delete Admin
+                                                        </Button>
+                                                    }
+                                                />
+                                                }
 
                                                 
 
-//                                                 {/* Delete admin */}
+                                                {/* Delete admin */}
 
-//                                             </DropdownMenuLabel>
-//                                             <DropdownMenuLabel>
-//                                                 {/* Delete User */}
-//                                                 <ConfirmationDialogue
-//                                                     title="Delete User?"
-//                                                     message={`Are you sure you want to delete ${allUser.fullName}? This action cannot be undone.`}
-//                                                     onConfirm={() => handleDeleteUser(allUser._id)}
-//                                                     trigger={
-//                                                         <Button className="bg-cyan-700 hover:bg-cyan-600s" size="sm">
-//                                                             Delete User
-//                                                         </Button>
-//                                                     }
-//                                                 />
-//                                             </DropdownMenuLabel>
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuLabel>
+                                                {/* Delete User */}
+                                                <ConfirmationDialogue
+                                                    title="Delete User?"
+                                                    message={`Are you sure you want to delete ${allUser.fullName}? This action cannot be undone.`}
+                                                    onConfirm={() => handleDeleteUser(allUser._id)}
+                                                    trigger={
+                                                        <Button className="bg-cyan-700 hover:bg-cyan-600s" size="sm">
+                                                            Delete User
+                                                        </Button>
+                                                    }
+                                                />
+                                            </DropdownMenuLabel>
 
-//                                         </DropdownMenuContent>
-//                                     </DropdownMenu>
-//                                 </TableCell>
-//                             </TableRow>
-//                         ))}
-//                     </TableBody>
-//                 </Table>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
 
-//                 <div className="flex justify-end text-sm  pt-2">
-//                     <div className="space-x-2">
-//                         <Button variant="ghost" size="sm" className="">Previous</Button>
-//                         <Button variant="ghost" size="sm" className="">Next</Button>
-//                     </div>
-//                 </div>
+                <div className="flex justify-end text-sm  pt-2">
+                    <div className="space-x-2">
+                        <Button variant="ghost" size="sm" className="">Previous</Button>
+                        <Button variant="ghost" size="sm" className="">Next</Button>
+                    </div>
+                </div>
 
-//             </div>
-//         </div>
-//     );
-// };
+            </div>
+        </div>
+    );
+};
 
-// export default AllUsers;
+export default AllUsers;
 
 
