@@ -12,6 +12,10 @@ import PDFViewerPage from "@/Pages/MyInvoices/PDFViewerPage ";
 import PricingPlans from "@/Pages/PricingPlans/PricingPlans";
 import Profile from "@/Pages/Profile/Profile";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import DashBoardLayOut from "@/Layout/DashBoardLayOut";
+import AllUsers from "@/AdminPage/AllUsers/AllUsers";
+import Dashboard from "@/AdminPage/Dashboard/Dashboard";
+import AdminRoute from "../AdminRoute/AdminRoute";
 
 export const router = createBrowserRouter([
     {
@@ -56,6 +60,24 @@ export const router = createBrowserRouter([
                 path:'/pricingPlans',
                 element:<PricingPlans></PricingPlans>
             },
+        ]
+    },
+    {
+        path: "/dashboard",
+        element:<DashBoardLayOut></DashBoardLayOut>,
+        children:[
+            {
+                path:'/dashboard/allUsers',
+                element:<AdminRoute><AllUsers></AllUsers></AdminRoute>
+            },
+            {
+                path:'/dashboard',
+                element:<AdminRoute><Dashboard></Dashboard></AdminRoute>
+            },
+            {
+                path:'/dashboard/allUsers',
+                element:<AllUsers></AllUsers>
+            }
         ]
     },
     {

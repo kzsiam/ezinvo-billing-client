@@ -9,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Controller, useForm } from 'react-hook-form';
 import { AuthContext } from '@/Contexts/AuthProvider';
 import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
 
 
 
@@ -18,8 +19,9 @@ import { useNavigate } from 'react-router';
 const CreateInvoice = () => {
 
     const { register, handleSubmit, control } = useForm();
+    const [loading, setLoading] = useState(false);
 
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const navigate = useNavigate()
 
     const countries = {
@@ -254,88 +256,82 @@ const CreateInvoice = () => {
         setItems([...items, { name: "", quantity: 1, rate: 0, tax: 0 }]);
     };
 
+    const handleSave = async (data) => {
+        try {
+            setLoading(true);
 
+            const formattedDueDate = data.dueDate
+                ? `${String(data.dueDate.getDate()).padStart(2, '0')}-${String(data.dueDate.getMonth() + 1).padStart(2, '0')}-${String(data.dueDate.getFullYear()).slice(-2)}`
+                : "";
 
-    const handleSave = (data) => {
+            const formattedIssueDate = data.issueDate
+                ? `${String(data.issueDate.getDate()).padStart(2, '0')}-${String(data.issueDate.getMonth() + 1).padStart(2, '0')}-${String(data.issueDate.getFullYear()).slice(-2)}`
+                : "";
 
-        //formatted date
-        const formattedDueDate = data.dueDate
-            ? `${String(data.dueDate.getDate()).padStart(2, '0')}-${String(
-                data.dueDate.getMonth() + 1
-            ).padStart(2, '0')}-${String(data.dueDate.getFullYear()).slice(-2)}`
-            : "";
-        const formattedIssueDate = data.dueDate
-            ? `${String(data.issueDate.getDate()).padStart(2, '0')}-${String(
-                data.issueDate.getMonth() + 1
-            ).padStart(2, '0')}-${String(data.issueDate.getFullYear()).slice(-2)}`
-            : "";
+            const uploadedImg = data.img[0];
+            const formData = new FormData();
+            formData.append("image", uploadedImg);
 
-        //image uploaded and insert data 
-        
-        const uploadedImg = data.img[0]
-        const formData = new FormData()
-        formData.append("image", uploadedImg)
-        const url = 'https://api.imgbb.com/1/upload?key=16612783c60b3795ca45e1987bb6938c';
-        fetch(url, {
-            method: "POST",
-            body: formData
-        })
-            .then(res => res.json())
-            .then(imgData => {
-                if (imgData.success) {
-                    const invoiceData = {
-                        invoiceLogo: imgData.data.display_url,
-                        myCity: data.myCity,
-                        myCompanyAddress: data.myCompanyAddress,
-                        myCompanyName: data.myCompanyName,
-                        myName: data.myName,
-                        myEmail:data.myEmail,
-                        myCountry: data.myCountry,
+            const imgRes = await fetch("https://api.imgbb.com/1/upload?key=16612783c60b3795ca45e1987bb6938c", {
+                method: "POST",
+                body: formData,
+            });
 
-                        invoiceNumber: data.invoiceNumber,
-                        dueDate: formattedDueDate,
-                        issueDate: formattedIssueDate,
+            const imgData = await imgRes.json();
 
-                        clientsCity: data.clientsCity,
-                        clientsCompanyAddress: data.clientsCompanyAddress,
-                        clientsCompanyName: data.clientsCompanyName,
-                        clientsName: data.clientsName,
-                        clientsEmail: data.clientsEmail,
-                        clientsCountry: data.clientsCountry,
+            if (imgData.success) {
+                const invoiceData = {
+                    invoiceLogo: imgData.data.display_url,
+                    myCity: data.myCity,
+                    myCompanyAddress: data.myCompanyAddress,
+                    myCompanyName: data.myCompanyName,
+                    myName: data.myName,
+                    myEmail: data.myEmail,
+                    myCountry: data.myCountry,
+                    invoiceNumber: data.invoiceNumber,
+                    dueDate: formattedDueDate,
+                    issueDate: formattedIssueDate,
+                    clientsCity: data.clientsCity,
+                    clientsCompanyAddress: data.clientsCompanyAddress,
+                    clientsCompanyName: data.clientsCompanyName,
+                    clientsName: data.clientsName,
+                    clientsEmail: data.clientsEmail,
+                    clientsCountry: data.clientsCountry,
+                    itemDetails: items,
+                    subtotal,
+                    totalTax,
+                    grandTotal,
+                    notes: data.notes,
+                    termsCondition: data.termsCondition,
+                    email: user?.email
+                };
 
-                        itemDetails: items,
-                        subtotal,
-                        totalTax,
-                        grandTotal,
-                        notes:data.notes,
-                        termsCondition:data.termsCondition,
+                const res = await fetch('http://localhost:1000/invoiceCollections', {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify(invoiceData)
+                });
 
-                        
-                        email:user?.email
+                const result = await res.json();
 
-
-                    }
-
-                    fetch('http://localhost:1000/invoiceCollections',{
-                        method:"POST",
-                        headers:{
-                            "content-type": "application/json"
-                        },
-                        body: JSON.stringify(invoiceData)
-                    })
-                    .then(res => res.json())
-                    .then(data =>{
-                        if(data.acknowledged){
-                            navigate('/myInvoices')
-                        }
-                    })
-
+                if (result.acknowledged) {
+                    toast.success("Created Successfully");
+                    navigate("/myInvoices");
+                } else {
+                    setLoading(false);
+                    toast.error("Save failed");
                 }
-            })
+            } else {
+                setLoading(false);
+                toast.error("Image upload failed");
+            }
+        } catch (err) {
+            console.log(err)
+            setLoading(false);
 
-
-
-        // You can also send `items` to a backend or store it in localStorage here
+        }
     };
 
     const deleteLineItem = (index) => {
@@ -348,7 +344,6 @@ const CreateInvoice = () => {
         return (rateAndTax + item.tax);
     };
 
-    
 
 
     return (
@@ -364,7 +359,7 @@ const CreateInvoice = () => {
                                         className='border-2 px-2 py-2 rounded-sm'
                                         type='file'
                                         accept="image/*"
-                                        {...register("img")}/>
+                                        {...register("img")} />
                                 </div>
 
                             </div>
@@ -620,11 +615,11 @@ const CreateInvoice = () => {
                         <div className="text-sm space-y-4">
                             <div>
                                 <h4 className="font-semibold">Notes</h4>
-                                <Textarea {...register("notes")} defaultValue="It was great doing business with you." />
+                                <Textarea {...register("notes")} required />
                             </div>
                             <div>
                                 <h4 className="font-semibold">Terms & Conditions</h4>
-                                <Textarea {...register("termsCondition")} defaultValue="Please make the payment by the due date." />
+                                <Textarea {...register("termsCondition")} required />
                             </div>
                         </div>
 
@@ -635,7 +630,7 @@ const CreateInvoice = () => {
                         </div>
 
                         <div className='flex justify-end'>
-                            <Button onClick={handleSave} className="bg-cyan-700">Save Online</Button>
+                            <Button onClick={handleSave} disabled={loading} className="bg-cyan-700"> {loading ? "Saving..." : "Save Online"}</Button>
 
                         </div>
                     </form>

@@ -30,7 +30,6 @@ const Signup = () => {
         const userData = {
             fullName: data.fullName,
             email: data.email,
-            userType: "",
             mobileNumber: "",
             profileImage: "",
             gender: ""

@@ -13,31 +13,31 @@ import { AuthContext } from '@/Contexts/AuthProvider';
 import axios, { Axios } from 'axios';
 import { Avatar } from '@radix-ui/react-avatar';
 import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import UseAdmin from '../UseAdmin/UseAdmin';
 
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext)
+    const [isAdmin] = UseAdmin(user?.email)
+    console.log(isAdmin)
     // console.log(user)
 
     const [dbUser, setDBuser] = useState([])
-    const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-    
+
+
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
                 setDBuser(response.data)
-                setLoading(false)
                 setError(null)
             }
             catch (error) {
                 setError(error.message)
-            }
-            finally {
-                setLoading(false)
             }
 
         }
@@ -48,11 +48,12 @@ const Navbar = () => {
     }, [user?.email])
 
     console.log(dbUser)
+    console.log(error)
 
-    if (error) {
-        return <h1>data not found</h1>
-    }
-    
+
+
+
+
     return (
         <div className=''>
             <header className="w-full px-6 py-4 bg-white shadow-md fixed top-0 z-50 mb-20">
@@ -64,8 +65,11 @@ const Navbar = () => {
                     <nav className="hidden md:flex gap-6 text-sm ">
                         <Link to='/createInvoice' className="hover:text-primary block">Create Invoice</Link>
                         <Link to='/myInvoices' className="hover:text-primary block">My Invoices</Link>
-                        <Link to='/' className="hover:text-primary block">Dashboard</Link>
-                        <Link to='/' className="hover:text-primary block">Clients</Link>
+                        {
+                            isAdmin && <Link to='/dashboard' className="hover:text-primary block">Dashboard</Link>
+                        }
+
+                        <Link to='/clients' className="hover:text-primary block">Clients</Link>
                         <Link to='/pricingPlans' className="hover:text-primary block">Pricing</Link>
 
                     </nav>
@@ -84,9 +88,9 @@ const Navbar = () => {
                                                 {/* <User className="w-5 h-5" /> */}
                                                 <Avatar>
                                                     {
-                                                        dbUser.profileImage? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} />:<AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0,2).toUpperCase()}</AvatarFallback>
+                                                        dbUser.profileImage ? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} /> : <AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0, 2).toUpperCase()}</AvatarFallback>
                                                     }
-                                                    
+
                                                 </Avatar>
                                             </Button>
                                         </DropdownMenuTrigger>
@@ -130,30 +134,30 @@ const Navbar = () => {
                                 !user && <Link to='/auth/login' className="hover:text-primary block">Login</Link>
                             }
 
-                             {
-                                    user && <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon">
-                                                {/* <User className="w-5 h-5" /> */}
-                                                <Avatar>
-                                                    {
-                                                        dbUser.profileImage? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} />:<AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0,2).toUpperCase()}</AvatarFallback>
-                                                    }
-                                                    
-                                                </Avatar>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem>
-                                                <Link to={'/profile'}>Profile</Link>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                <Link>Settings</Link>
-                                            </DropdownMenuItem>
-                                            <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                }
+                            {
+                                user && <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                            {/* <User className="w-5 h-5" /> */}
+                                            <Avatar>
+                                                {
+                                                    dbUser.profileImage ? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} /> : <AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                                }
+
+                                            </Avatar>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuItem>
+                                            <Link to={'/profile'}>Profile</Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <Link>Settings</Link>
+                                        </DropdownMenuItem>
+                                        <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            }
                             <Button className='mx3 bg-cyan-700 text-white hover:bg-cyan-600'>
                                 Try it free
                             </Button>
@@ -162,10 +166,12 @@ const Navbar = () => {
                         {/* Menu Items */}
                         <nav className="flex  flex-col items-center space-y-6 text-black text-sm font-normal ">
                             <Link to='/createInvoice' className="hover:text-primary block">Create Invoice</Link>
-                            <Link href="/myInvoices" className="hover:text-primary block">My Invoices</Link>
-                            <Link href="#" className="hover:text-primary block">Dashboard</Link>
-                            <Link href="#" className="hover:text-primary block">Clients</Link>
-                            <Link href="/pricingPlans" className="hover:text-primary block">Pricing</Link>
+                            <Link to="/myInvoices" className="hover:text-primary block">My Invoices</Link>
+                            {
+                                isAdmin && <Link to='/dashboard' className="hover:text-primary block">Dashboard</Link>
+                            }
+                            <Link to="/clients" className="hover:text-primary block">Clients</Link>
+                            <Link to="/pricingPlans" className="hover:text-primary block">Pricing</Link>
                         </nav>
                     </div>
                 )}

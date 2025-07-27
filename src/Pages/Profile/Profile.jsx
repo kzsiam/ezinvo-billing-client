@@ -16,7 +16,10 @@ import { useNavigate } from 'react-router';
 
 const Profile = () => {
 
-    const { user, updateUserInfo } = useContext(AuthContext)
+    const { user, updateUserInfo,emailVerification } = useContext(AuthContext)
+      
+
+    
     // console.log(user)
     const navigate = useNavigate()
 
@@ -59,7 +62,7 @@ const Profile = () => {
         }
     }, [user?.email])
 
-    console.log(dbUser)
+    console.log(user)
     const handleInfoChange = (userInfoData) => {
         // console.log(userInfoData)
         const uploadedImg = userInfoData.profileImage[0]
@@ -119,6 +122,14 @@ const Profile = () => {
             })
     }
 
+    const verifyEmail = () =>{
+        emailVerification()
+        .then(() =>{
+            
+            toast.success("Verification link has been sent to your email address. ")
+        })
+    }
+
     if (loading) {
         return <h1 className='mt-20'>loading......</h1>
     }
@@ -155,7 +166,9 @@ const Profile = () => {
 
                             {/* Email (readonly) */}
                             <div>
-                                <Label className="mb-2">Email Address <span className="text-blue-600 cursor-pointer text-sm ml-2">Verify Email</span></Label>
+                                {
+                                    !user?.emailVerified && <Label className="mb-2">Email Address <span className="text-blue-600  text-sm ml-2"> <Label onClick={verifyEmail} className="cursor-pointer">Verify Email</Label></span></Label>
+                                }
                                 <Input className="border-0 " placeholder="email" defaultValue={dbUser?.email} readOnly />
                             </div>
 
