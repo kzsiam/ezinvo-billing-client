@@ -1,9 +1,11 @@
 import { Card, CardContent } from '@/components/ui/card';
+import useTitle from '@/hooks/useTitle';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 const Dashboard = () => {
+    useTitle('Dashboard')
     const pieData = [
         { name: "Income", value: 8000 },
         { name: "Expand", value: 9000 },
@@ -27,7 +29,7 @@ const Dashboard = () => {
             setDBuser(response.data)
         }
         catch(error){
-            console.log(error)
+            console.error(error)
         }
         
     }
@@ -35,6 +37,30 @@ const Dashboard = () => {
     useEffect(() =>{
         fetchUsers()
     },[])
+
+    const [paidInvoice, setPaidInvoice] = useState([])
+
+    const fetchPaidInvoice = async() =>{
+        try{
+            const response = await axios.get("http://localhost:1000/allPaidData")
+            setPaidInvoice(response.data)
+        }
+        catch(error){
+            console.error(error)
+        }
+        
+    }
+    useEffect(() =>{
+        fetchPaidInvoice()
+    },[])
+
+
+    const totalPaid = paidInvoice.reduce((sum, invoice) => sum + invoice.grandTotal, 0);
+
+    
+
+
+
      const [invoiceCollections, setInvoiceCollections] = useState([])
 
     const fetchInvoices = async() =>{
@@ -43,7 +69,7 @@ const Dashboard = () => {
             setInvoiceCollections(response.data)
         }
         catch(error){
-            console.log(error)
+            console.error(error)
         }
         
     }
@@ -72,7 +98,7 @@ const Dashboard = () => {
                 <Card>
                     <CardContent className="p-4">
                         <div className="text-sm text-muted-foreground mb-2">Amount Paid</div>
-                        <div className="text-xl font-semibold">$4386</div>
+                        <div className="text-xl font-semibold">$ {totalPaid}</div>
                         
                     </CardContent>
                 </Card>

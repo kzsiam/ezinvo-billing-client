@@ -2,22 +2,23 @@ import React, { useContext } from 'react';
 import UseAdmin from '@/SharedPages/UseAdmin/UseAdmin';
 import { AuthContext } from '@/Contexts/AuthProvider';
 import { Navigate, useLocation } from 'react-router';
+import { RiseLoader } from 'react-spinners';
 
-const AdminRoute = ({children}) => {
+const AdminRoute = ({ children }) => {
     const location = useLocation()
-    const {user,loader} = useContext(AuthContext)
+    const { user, loader } = useContext(AuthContext)
 
-    const [isAdmin,isAdminLoading] = UseAdmin(user?.email)
+    const [isAdmin, isAdminLoading] = UseAdmin(user?.email)
 
-    if(loader || isAdminLoading){
-        return <div className='mx-auto'>
-        <span className="loading loading-bars loading-xs"></span>
-        <span className="loading loading-bars loading-sm"></span>
-        <span className="loading loading-bars loading-md"></span>
-        <span className="loading loading-bars loading-lg"></span>
-    </div>
+    if (loader || isAdminLoading) {
+        return <div className=' mt-60 flex justify-center items-center'>
+            
+            <RiseLoader />
+        </div>
+
+
     }
-    if(user && isAdmin){
+    if (user && isAdmin) {
         return children;
     }
     return (

@@ -16,6 +16,8 @@ import DashBoardLayOut from "@/Layout/DashBoardLayOut";
 import AllUsers from "@/AdminPage/AllUsers/AllUsers";
 import Dashboard from "@/AdminPage/Dashboard/Dashboard";
 import AdminRoute from "../AdminRoute/AdminRoute";
+import Success from "@/Pages/Payment/Success";
+import Cancel from "@/Pages/Payment/Cancel";
 
 export const router = createBrowserRouter([
     {
@@ -52,9 +54,9 @@ export const router = createBrowserRouter([
             },
             {
                 path:'/pdfViewerPage/:id',
-                loader: ({params}) => fetch(`http://localhost:1000/invoiceCollections/${params.id
+                loader: ({params}) => fetch(`http://localhost:1000/invoiceCollections/invoice/${params.id
                 }`),
-                element:<PrivateRoute><PDFViewerPage></PDFViewerPage></PrivateRoute>
+                element:<PDFViewerPage></PDFViewerPage>
             },
             {
                 path:'/pricingPlans',
@@ -64,7 +66,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/dashboard",
-        element:<DashBoardLayOut></DashBoardLayOut>,
+        element:<AdminRoute><DashBoardLayOut></DashBoardLayOut></AdminRoute>,
         children:[
             {
                 path:'/dashboard/allUsers',
@@ -75,13 +77,21 @@ export const router = createBrowserRouter([
                 element:<AdminRoute><Dashboard></Dashboard></AdminRoute>
             },
             {
-                path:'/dashboard/allUsers',
-                element:<AllUsers></AllUsers>
+                path:'/dashboard/allUsersee',
+                element:<></>
             }
         ]
     },
     {
         path:'*',
         element:<h1>page not found</h1>
+    },
+    {
+        path:'/success',
+        element:<Success></Success>
+    },
+    {
+        path:'/cancel',
+        element:<Cancel></Cancel>
     },
 ])

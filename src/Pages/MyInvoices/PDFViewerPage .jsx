@@ -2,11 +2,13 @@ import React from 'react';
 import { useLoaderData } from 'react-router';
 import MyDocuments from './MyDocuments';
 import { PDFViewer } from '@react-pdf/renderer';
+import useTitle from '@/hooks/useTitle';
 
 
 const PDFViewerPage = () => {
     const item = useLoaderData()
-    console.log(item)
+    useTitle('PDFViewer')
+   
     return (
         <div className="h-screen mt-20">
             {
@@ -14,6 +16,7 @@ const PDFViewerPage = () => {
                 <MyDocuments item={item} />
             </PDFViewer>
             }
+            
         </div>
     );
 };

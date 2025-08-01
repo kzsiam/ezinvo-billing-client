@@ -3,7 +3,7 @@ import React from 'react';
 
 const MyDocuments = ({ item }) => {
     const itemInfo = item.itemDetails;
-    console.log(itemInfo)
+   
 
     const styles = StyleSheet.create({
         page: {
@@ -119,7 +119,10 @@ const MyDocuments = ({ item }) => {
                 <View style={styles.myCompanyDetails}>
                     <Text style={styles.sectionTitle}>From:</Text>
                     <Text>{item.myCompanyName}</Text>
+                    <Text>{item.myName}</Text>
+                    <Text>{item.myEmail}</Text>
                     <Text>{item.myCompanyAddress}</Text>
+                    <Text>{item.myContactNumber}</Text>
                     <Text>{item.myCity}</Text>
                     <Text>{item.myCountry}</Text>
                 </View>
@@ -131,7 +134,9 @@ const MyDocuments = ({ item }) => {
                         <Text style={styles.sectionTitle}>Bill To:</Text>
                         <Text>{item.clientsCompanyName}</Text>
                         <Text>{item.clientsName}</Text>
+                        <Text>{item.clientsEmail}</Text>
                         <Text>{item.clientsCompanyAddress}</Text>
+                        <Text>{item.clientsContactNumber}</Text>
                         <Text>{item.clientsCity}</Text>
                         <Text>{item.clientsCountry}</Text>
                     </View>

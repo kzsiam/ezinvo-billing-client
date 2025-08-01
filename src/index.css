@@ -1,4 +1,7 @@
 @import "tailwindcss";
+body {
+  font-family: 'Roboto', sans-serif;
+}
 /* @import "tw-animate-css"; */
 
 @custom-variant dark (&:is(.dark *));

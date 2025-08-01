@@ -5,11 +5,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AuthContext } from '@/Contexts/AuthProvider';
+import useTitle from '@/hooks/useTitle';
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
+import { RiseLoader } from 'react-spinners';
 // import toast from 'react-hot-toast';
 
 
@@ -19,8 +21,8 @@ const Profile = () => {
     const { user, updateUserInfo,emailVerification } = useContext(AuthContext)
       
 
-    
-    // console.log(user)
+    useTitle('Profile')
+   
     const navigate = useNavigate()
 
     const [dbUser, setDBuser] = useState([])
@@ -36,7 +38,7 @@ const Profile = () => {
         const file = e.target.files[0];
         setProfileImage(file);
         setPreviewUrl(URL.createObjectURL(file));
-        console.log(profileImage)
+        
     };
 
 
@@ -44,7 +46,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
+                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`,{withCredentials:true})
                 setDBuser(response.data)
                 setLoading(false);      // Start loading
                 setError(null);
@@ -62,9 +64,9 @@ const Profile = () => {
         }
     }, [user?.email])
 
-    console.log(user)
+    
     const handleInfoChange = (userInfoData) => {
-        // console.log(userInfoData)
+        
         const uploadedImg = userInfoData.profileImage[0]
         const formData = new FormData()
         formData.append("image", uploadedImg)
@@ -85,7 +87,7 @@ const Profile = () => {
                         photoUrl: imgData.data.display_url
                     }
 
-                    // console.log("updatedInfo", updatedInfo)
+                 
                     handleUpdate(userInfoData.name, imgData.data.display_url, userInfoData.phoneNumber)
                     
                     fetch(`http://localhost:1000/usersCollection/${dbUser?._id}`, {
@@ -118,7 +120,7 @@ const Profile = () => {
 
             })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }
 
@@ -130,9 +132,10 @@ const Profile = () => {
         })
     }
 
-    if (loading) {
-        return <h1 className='mt-20'>loading......</h1>
-    }
+    if (loading) return <div className=' mt-60 flex justify-center items-center'>
+        {/* <h1>loading....</h1> */}
+        <RiseLoader />
+    </div>;
 
     if (error) return <div className='mt-20'>Error: {error}</div>;
     return (
@@ -204,7 +207,7 @@ const Profile = () => {
 
                         {/* Save Button */}
                         <div className="pt-4">
-                            <Button className="bg-cyan-700 hover:bg-orange-600">SAVE CHANGES</Button>
+                            <Button className="bg-cyan-700 hover:bg-orange-600 cursor-pointer">SAVE CHANGES</Button>
                         </div>
                     </div>
                 </form>

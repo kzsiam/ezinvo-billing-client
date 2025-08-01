@@ -12,20 +12,23 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { AuthContext } from '@/Contexts/AuthProvider';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+import useTitle from '@/hooks/useTitle';
 
 const Signup = () => {
+    useTitle('Signup')
     const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from?.pathname || '/'
-    const { createUser, updateUserInfo } = useContext(AuthContext)
-    // console.log(user)
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
+    const { createUser, updateUserInfo, emailVerification } = useContext(AuthContext)
+   
     const [isAccepted, setIsAccepted] = useState(false);
     const [passwordError, setPasswordError] = useState('');
     const [signupError, setSignupError] = useState('');
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const handleSignup = (data) => {
-        
+
 
         const userData = {
             fullName: data.fullName,
@@ -46,27 +49,34 @@ const Signup = () => {
                     toast.success(
                         "Signup Successful! Please verify your email address to continue using our services. A verification link has been sent to your email. Access will remain restricted until verification is complete."
                     );
+                    emailVerification()
 
-                    fetch("http://localhost:1000/usersCollection",{
+                    fetch("http://localhost:1000/usersCollection", {
                         method: "POST",
-                         headers:{
+                        headers: {
                             "content-type": "application/json"
                         },
-                        body:JSON.stringify(userData)
+                        body: JSON.stringify(userData)
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log(data)
-                        navigate(from,{replace:true})
-                    })
-                    console.log(result.user.displayName)
+                        .then(res => res.json())
+                        .then(signInData => {
+                            
+                            
+                            const user = {email: data.email}
+                            axios.post('http://localhost:1000/jwt', user, {
+                                withCredentials: true
+                            })
+                                .then(res => {})
+                            navigate(from, { replace: true })
+                        })
+                    
 
                 })
                 .catch(error => {
                     setSignupError(error.message)
                 })
         }
-        // console.log(data)
+        
     }
 
     const handleUpdate = (name) => {
@@ -78,7 +88,7 @@ const Signup = () => {
 
             })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }
     return (
@@ -152,7 +162,7 @@ const Signup = () => {
                             </label>
                         </div>
                         <Button disabled={!isAccepted} type="submit" className="w-full bg-cyan-700
- hover:bg-cyan-600 mb-3 text-white">
+ hover:bg-cyan-600 mb-3 text-white cursor-pointer">
                             Register
                         </Button>
                     </form>
@@ -167,3 +177,5 @@ const Signup = () => {
 };
 
 export default Signup;
+
+

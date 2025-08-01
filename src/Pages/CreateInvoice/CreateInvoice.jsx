@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { AuthContext } from '@/Contexts/AuthProvider';
 import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
+import useTitle from '@/hooks/useTitle';
 
 
 
@@ -17,6 +18,7 @@ import toast from 'react-hot-toast';
 
 
 const CreateInvoice = () => {
+    useTitle('Create Invoice')
 
     const { register, handleSubmit, control } = useForm();
     const [loading, setLoading] = useState(false);
@@ -286,6 +288,7 @@ const CreateInvoice = () => {
                     myCompanyAddress: data.myCompanyAddress,
                     myCompanyName: data.myCompanyName,
                     myName: data.myName,
+                    myContactNumber: data.myContactNumber,
                     myEmail: data.myEmail,
                     myCountry: data.myCountry,
                     invoiceNumber: data.invoiceNumber,
@@ -295,6 +298,7 @@ const CreateInvoice = () => {
                     clientsCompanyAddress: data.clientsCompanyAddress,
                     clientsCompanyName: data.clientsCompanyName,
                     clientsName: data.clientsName,
+                    clientsContactNumber:data.clientsContactNumber,
                     clientsEmail: data.clientsEmail,
                     clientsCountry: data.clientsCountry,
                     itemDetails: items,
@@ -328,7 +332,7 @@ const CreateInvoice = () => {
                 toast.error("Image upload failed");
             }
         } catch (err) {
-            console.log(err)
+            console.error(err)
             setLoading(false);
 
         }
@@ -356,7 +360,7 @@ const CreateInvoice = () => {
                             <div className="flex flex-col items-center space-y-2">
                                 <div className="flex flex-col items-center gap-4">
                                     <input
-                                        className='border-2 px-2 py-2 rounded-sm'
+                                        className='border-2 px-2 py-2 w-60 rounded-sm'
                                         type='file'
                                         accept="image/*"
                                         {...register("img")} />
@@ -402,6 +406,14 @@ const CreateInvoice = () => {
                                         id="name"
                                         placeholder="Company's Address"
                                         className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
+                                    />
+                                </div>
+                                <div className="mb-1">
+                                    <Input type="number" {...register("myContactNumber")}
+                                        id="name"
+                                        placeholder="Contact Number With Country Code"
+                                        className="border  h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
+                                        required
                                     />
                                 </div>
                                 <div className="mb-1">
@@ -456,8 +468,16 @@ const CreateInvoice = () => {
                                 <div className="mb-1">
                                     <Input {...register("clientsCompanyAddress")}
                                         id="name"
-                                        placeholder="Client Company's Address"
+                                        placeholder="Company's Address"
                                         className="border h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-1">
+                                    <Input type="number" {...register("clientsContactNumber")}
+                                        id="name"
+                                        placeholder="Contact Number With Country Code"
+                                        className="border  h-7 shadow-none border-transparent focus:border-cyan-700 focus:outline-none "
                                         required
                                     />
                                 </div>
@@ -579,7 +599,7 @@ const CreateInvoice = () => {
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="text-red-500 hover:text-red-700"
+                                            className="text-red-500 cursor-pointer hover:text-red-700"
                                             onClick={() => deleteLineItem(index)}
                                         >
                                             <h1 className='text-red-500'>x</h1>
@@ -589,7 +609,7 @@ const CreateInvoice = () => {
 
                                 <Button
                                     variant="link"
-                                    className="text-cyan-700 text-sm"
+                                    className="text-cyan-700 text-sm cursor-pointer"
                                     onClick={addLineItem}
                                 >
                                     + Add Line Item
@@ -630,7 +650,14 @@ const CreateInvoice = () => {
                         </div>
 
                         <div className='flex justify-end'>
-                            <Button onClick={handleSave} disabled={loading} className="bg-cyan-700"> {loading ? "Saving..." : "Save Online"}</Button>
+                            {/* <Button onClick={handleSave} disabled={!user?.emailVerified} disabled={loading}  className="bg-cyan-700 mt-4"> {loading ? "Saving..." : "Save Online"}</Button> */}
+                            <Button
+                                onClick={handleSave}
+                                disabled={!user?.emailVerified || loading}
+                                className="bg-cyan-700 mt-4 cursor-pointer"
+                            >
+                                {loading ? "Saving..." : "Save Online"}
+                            </Button>
 
                         </div>
                     </form>

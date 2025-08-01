@@ -19,8 +19,7 @@ import UseAdmin from '../UseAdmin/UseAdmin';
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext)
     const [isAdmin] = UseAdmin(user?.email)
-    console.log(isAdmin)
-    // console.log(user)
+    
 
     const [dbUser, setDBuser] = useState([])
     const [error, setError] = useState(null)
@@ -32,7 +31,7 @@ const Navbar = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
+                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`,{withCredentials:true})
                 setDBuser(response.data)
                 setError(null)
             }
@@ -47,20 +46,20 @@ const Navbar = () => {
         }
     }, [user?.email])
 
-    console.log(dbUser)
-    console.log(error)
+   
 
 
 
 
 
     return (
-        <div className=''>
+        <div className='mb-10'>
             <header className="w-full px-6 py-4 bg-white shadow-md fixed top-0 z-50 mb-20">
                 <div className="flex justify-between items-center container mx-auto">
                     {/* Logo / Brand */}
-                    <div className="text-xl font-bold "><Link to={"/"}>EzInvo</Link></div>
-
+                    <div className="text-xl font-bold "><Link to={"/"}>
+                        <span className='bg-cyan-700 text-white px-2'>E Z</span><span> INVO</span>
+                    </Link></div>
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex gap-6 text-sm ">
                         <Link to='/createInvoice' className="hover:text-primary block">Create Invoice</Link>
@@ -84,11 +83,11 @@ const Navbar = () => {
                                 {
                                     user && <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon">
+                                            <Button className="cursor-pointer" variant="ghost" size="icon">
                                                 {/* <User className="w-5 h-5" /> */}
                                                 <Avatar>
                                                     {
-                                                        dbUser.profileImage ? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} /> : <AvatarFallback className="text-cyan-700 hover:cursor-pointer">{dbUser?.fullName?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                                        dbUser.profileImage ? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} /> : <AvatarFallback className="text-cyan-700 hover:cursor-pointer">{user?.displayName?.slice(0, 1).toUpperCase()}</AvatarFallback>
                                                     }
 
                                                 </Avatar>
@@ -101,11 +100,11 @@ const Navbar = () => {
                                             <DropdownMenuItem>
                                                 <Link>Settings</Link>
                                             </DropdownMenuItem>
-                                            <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
+                                            <button onClick={logout} className=''><DropdownMenuItem className="cursor-pointer">Logout</DropdownMenuItem></button>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 }
-                                <Button className='mx3 bg-cyan-700 text-white hover:bg-cyan-600'>
+                                <Button className='mx3 bg-cyan-700 text-white cursor-pointer hover:bg-cyan-600'>
                                     Try it free
                                 </Button>
                             </div>
@@ -115,7 +114,7 @@ const Navbar = () => {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="md:hidden"
+                            className="md:hidden cursor-pointer"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         >
                             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -137,7 +136,7 @@ const Navbar = () => {
                             {
                                 user && <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon">
+                                        <Button className="cursor-pointer" variant="ghost" size="icon">
                                             {/* <User className="w-5 h-5" /> */}
                                             <Avatar>
                                                 {
@@ -154,11 +153,11 @@ const Navbar = () => {
                                         <DropdownMenuItem>
                                             <Link>Settings</Link>
                                         </DropdownMenuItem>
-                                        <button onClick={logout} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
+                                        <button onClick={logout} className='cursor-pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             }
-                            <Button className='mx3 bg-cyan-700 text-white hover:bg-cyan-600'>
+                            <Button className='mx3 cursor-pointer bg-cyan-700 text-white hover:bg-cyan-600'>
                                 Try it free
                             </Button>
                         </div>

@@ -13,9 +13,11 @@ import { useForm } from 'react-hook-form';
 import { useContext } from 'react';
 import { AuthContext } from '@/Contexts/AuthProvider';
 import toast from 'react-hot-toast';
+import axios from 'axios';
+import useTitle from '@/hooks/useTitle';
 
 const Login = () => {
-
+  useTitle("Login")
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from?.pathname || '/'
@@ -27,6 +29,11 @@ const Login = () => {
     signInEmail(data.email, data.password)
       .then(() => {
         toast.success('welcome back')
+        const user = { email: data.email }
+        axios.post('http://localhost:1000/jwt', user, {
+          withCredentials: true
+        })
+          .then(res => { })
         navigate(from, { replace: true })
 
       })
@@ -64,7 +71,7 @@ const Login = () => {
 
             <div className="text-right mt-2 mb-5"> <Label className="text-sm hover:underline cursor-pointer"> <Link to="/forgetPassword">Forgot Password?</Link> </Label> </div>
 
-            <Button type="submit" className="w-full bg-cyan-700 hover:bg-cyan-600 mb-3 text-white">
+            <Button type="submit" className="w-full cursor-pointer bg-cyan-700 hover:bg-cyan-600 mb-3 text-white">
               Login
             </Button>
           </form>

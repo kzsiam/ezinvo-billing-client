@@ -4,8 +4,11 @@ import invoiceImg from '../../assets/Invoice.png'
 import image2 from "../../assets/laptop and pdf.png"
 import image3 from "../../assets/hpdah[1].png"
 import { Mail } from 'lucide-react';
+import { Link } from 'react-router';
+import useTitle from '@/hooks/useTitle';
 
 const Home = () => {
+  useTitle('Home')
   return (
     <div className='mt-20'>
       <div className="bg-white py-16 px-4 mx-auto flex justify-center items-center text-center  ">
@@ -18,16 +21,13 @@ const Home = () => {
           <p className="text-gray-600 mb-6 text-base">
             Create & download invoices for free
           </p>
-          <Button className="text-base px-6 py-3 rounded-full bg-cyan-700 mb-5 hover:bg-cyan-800">
+          <Link to={"/createInvoice"}><Button className="bg-cyan-700 hover:bg-cyan-800 px-6 py-5 cursor-pointer text-white text-sm rounded-full shadow-md">
             Create Free Invoice Now
-          </Button>
+          </Button></Link>
 
           <div className='lg:w-96 flex justify-center items-center shadow-xl'>
             <img className='' src={invoiceImg} alt=''></img>
           </div>
-          <Button className="text-base px-6 py-3 mt-5 rounded-full bg-cyan-700 mb-5 hover:bg-cyan-800">
-            Create Free Invoice Now
-          </Button>
         </div>
       </div>
       <section>
@@ -42,7 +42,7 @@ const Home = () => {
                 className="w-full max-w-sm object-contain"
               />
             </div>
-            
+
 
             {/* Text Section */}
             <div className="md:order-1">
@@ -59,7 +59,7 @@ const Home = () => {
               <p className="text-gray-600 text-base leading-relaxed">
                 The clean, user-friendly interface of the invoice generator also lets you add new clients and manage them easily.
                 Contact, company & payment details and customized{" "}
-                <a href="#" className="text-blue-600 font-medium underline hover:text-blue-800">
+                <a href="#" className="text-cyan-600 font-medium underline hover:text-cyan-800">
                   invoice templates
                 </a>{" "}
                 can be saved for recurring invoices.
@@ -105,17 +105,17 @@ const Home = () => {
 
             <p className="text-gray-700 text-base leading-relaxed">
               Sending invoices to clients is a large part of any business – in order to keep a business running, payments from clients must be received on time. However, the{" "}
-              <span className="text-blue-600 font-medium">process of producing invoices</span>{" "}
+              <span className="text-cyan-600 font-medium">process of producing invoices</span>{" "}
               can often be quite tedious, which is why many business owners defer it to the last possible minute. But now, with new digital tools and technologies available, all that has changed: producing invoices and sending them to clients has never been easier.
             </p>
 
             <p className="text-gray-700 text-base leading-relaxed">
               Free Invoice Builder is an{" "}
-              <a href="#" className="text-blue-600 font-medium underline hover:text-blue-800">
+              <a href="#" className="text-cyan-600 font-medium underline hover:text-cyan-800">
                 online invoice generator
               </a>{" "}
               – an innovative business tool you can use for creating invoices online without any hassle. It allows businesses to produce invoices using a ready-made template, where all that needs to be done is inserting the client’s details, the items for payment,{" "}
-              <a href="#" className="text-blue-600 font-medium underline hover:text-blue-800">
+              <a href="#" className="text-cyan-600 font-medium underline hover:text-cyan-800">
                 taxes (if necessary)
               </a>{" "}
               and the total amount – then sending the invoice to the client online.
@@ -126,19 +126,19 @@ const Home = () => {
             </p>
 
             <div className="mt-8 space-y-4 text-center">
-              <div className="flex justify-center items-center space-x-2 text-blue-700">
+              <div className="flex justify-center items-center space-x-2 text-cyan-700">
                 <Mail className="w-5 h-5" />
                 <a
                   href="mailto:contact@freeinvoicebuilder.com"
-                  className="font-medium underline hover:text-blue-800"
+                  className="font-medium underline hover:text-cyan-700"
                 >
                   contact@freeinvoicebuilder.com
                 </a>
               </div>
 
-              <Button className="bg-blue-600 hover:bg-blue-700 px-6 py-5 text-white text-sm rounded-full shadow-md">
-                Create Free Invoice Now
-              </Button>
+              <Link to={"/createInvoice"}><Button className="bg-cyan-700 hover:bg-cyan-800 px-6 py-5 cursor-pointer text-white text-sm rounded-full shadow-md">
+            Create Free Invoice Now
+          </Button></Link>
             </div>
           </div>
         </div>

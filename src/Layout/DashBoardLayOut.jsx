@@ -4,13 +4,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { AuthContext } from '@/Contexts/AuthProvider';
+import useTitle from '@/hooks/useTitle';
 import { ChevronDown, Menu } from 'lucide-react';
 import React, { useContext } from 'react';
 import { Link, Outlet } from 'react-router';
 
 const DashBoardLayOut = () => {
-    const { user } = useContext(AuthContext)
-    console.log(user)
+    const { user, logout } = useContext(AuthContext)
+    useTitle('Dashboard')
+   
     return (
         <div className="flex min-h-screen">
             {/* Sidebar for desktop */}
@@ -30,26 +32,19 @@ const DashBoardLayOut = () => {
                             <ChevronDown className="h-4 w-4 text-muted-foreground" />
                         </div>
                     </DropdownMenuTrigger>
-
-                    <DropdownMenuContent className="w-48 mt-2">
-                        {/* You can add dropdown items here */}
-                        <button onClick={''} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
-                    </DropdownMenuContent>
                 </DropdownMenu>
                 <Link to={"/"} className="mb-5 mt-5 px-2" >Home</Link>
                 <Link to={"/dashboard"} className="mb-5 px-2">Dashboard</Link>
                 <Link to={"/dashboard/allUsers"} className="mb-5 px-2">All Users</Link>
-                <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Invoices</Link>
-                <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Review</Link>
                 <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Reports</Link>
-                <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Logout</Link>
+                <Link onClick={logout} className="mb-5 px-2">Logout</Link>
             </div>
 
             {/* Drawer for small screens */}
             <div className="lg:hidden fixed top-4 left-4 z-50">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button className="cursor-pointer" variant="ghost" size="icon">
                             {/* <RiMenu3Fill className="w-6 h-6" /> */}
                             <Menu className="w-5 h-5" />
                         </Button>
@@ -70,18 +65,12 @@ const DashBoardLayOut = () => {
                                 </div>
                             </DropdownMenuTrigger>
 
-                            <DropdownMenuContent className="w-48 mt-2">
-                                {/* You can add dropdown items here */}
-                                <button onClick={''} className='pointer'><DropdownMenuItem>Logout</DropdownMenuItem></button>
-                            </DropdownMenuContent>
                         </DropdownMenu>
                         <Link to={"/"} className="mb-5 mt-5 px-2" >Home</Link>
                         <Link to={"/dashboard"} className="mb-5 px-2">Dashboard</Link>
                         <Link to={"/dashboard/allUsers"} className="mb-5 px-2">All Users</Link>
-                        <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Invoices</Link>
-                        <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Review</Link>
                         <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Reports</Link>
-                        <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Logout</Link>
+                        <Link onClick={logout} className="mb-5 px-2">Logout</Link>
                     </SheetContent>
                 </Sheet>
             </div>
@@ -94,7 +83,7 @@ const DashBoardLayOut = () => {
                         Welcome to EzInvo Admin Dashboard
                     </h2>
                 </header>
-                
+
 
 
                 {/* Main outlet */}
