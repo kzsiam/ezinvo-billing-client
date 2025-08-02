@@ -25,7 +25,7 @@ const Dashboard = () => {
 
     const fetchUsers = async() =>{
         try{
-            const response = await axios.get("http://localhost:1000/usersCollection")
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`)
             setDBuser(response.data)
         }
         catch(error){
@@ -42,7 +42,7 @@ const Dashboard = () => {
 
     const fetchPaidInvoice = async() =>{
         try{
-            const response = await axios.get("http://localhost:1000/allPaidData")
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/allPaidData`)
             setPaidInvoice(response.data)
         }
         catch(error){
@@ -65,7 +65,7 @@ const Dashboard = () => {
 
     const fetchInvoices = async() =>{
         try{
-            const response = await axios.get("http://localhost:1000/invoiceCollections")
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`)
             setInvoiceCollections(response.data)
         }
         catch(error){

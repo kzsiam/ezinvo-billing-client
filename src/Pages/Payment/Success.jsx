@@ -13,7 +13,7 @@ const Success = () => {
 
     useEffect(() => {
         if (invoiceId) {
-            axios.post(`http://localhost:1000/api/invoice/mark-paid/${invoiceId}`)
+            axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/invoice/mark-paid/${invoiceId}`)
                 .then(() => {
                     toast.success("MARK as Paid")
                 })

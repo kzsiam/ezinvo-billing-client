@@ -46,7 +46,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`,{withCredentials:true})
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`,{withCredentials:true})
                 setDBuser(response.data)
                 setLoading(false);      // Start loading
                 setError(null);
@@ -90,7 +90,7 @@ const Profile = () => {
                  
                     handleUpdate(userInfoData.name, imgData.data.display_url, userInfoData.phoneNumber)
                     
-                    fetch(`http://localhost:1000/usersCollection/${dbUser?._id}`, {
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${dbUser?._id}`, {
                         method: "PATCH",
                         headers: {
                             "content-type": "application/json"

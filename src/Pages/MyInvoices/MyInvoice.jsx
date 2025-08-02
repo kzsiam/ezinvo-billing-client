@@ -12,7 +12,7 @@ import { Link } from 'react-router';
 const MyInvoice = ({ invoiceData, i, refetch }) => {
    
     const handleDeleteInvoice = (id) => {
-        fetch(`http://localhost:1000/invoiceCollections/${id}`, {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections/${id}`, {
             method: "DELETE",
             headers: {
 
@@ -30,7 +30,7 @@ const MyInvoice = ({ invoiceData, i, refetch }) => {
 
     const handleSendMail = async (id) => {
         try {
-            const res = await fetch(`http://localhost:1000/send-invoice-email/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/send-invoice-email/${id}`, {
                 method: "POST",
             });
             const data = await res.json();
@@ -45,7 +45,7 @@ const MyInvoice = ({ invoiceData, i, refetch }) => {
     };
     const handleGeneratePay = async (id) => {
         
-        const res = await axios.post(`http://localhost:1000/invoicePay/${id}`);
+        const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/invoicePay/${id}`);
         
         if(res.data){
             toast.success("Payment Link Generated")

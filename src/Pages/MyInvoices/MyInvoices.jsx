@@ -16,10 +16,10 @@ const MyInvoices = () => {
     const [error, setError] = useState(null)
 
     
-    const fetchUsers = async () => {
+    const fetchInvoices = async () => {
 
         try {
-            const response = await axios.get(`http://localhost:1000/invoiceCollections/${user?.email}`, { withCredentials: true });
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections/${user?.email}`, { withCredentials: true });
             setInvoiceList(response.data); // Set response data to state
             setLoading(false);      // Start loading
             setError(null);
@@ -35,7 +35,7 @@ const MyInvoices = () => {
 
     useEffect(() => {
         if (user?.email) {
-            fetchUsers()
+            fetchInvoices()
         }
     }, [user?.email])
     if (loading) return <div className=' mt-60 flex justify-center items-center'>
@@ -74,7 +74,7 @@ const MyInvoices = () => {
                                 </TableHeader>
                                 <TableBody>
                                     {invoiceList.map((invoiceData, i) => (
-                                        <MyInvoice invoiceData={invoiceData} refetch={fetchUsers} i={i} key={invoiceData._id}></MyInvoice>
+                                        <MyInvoice invoiceData={invoiceData} refetch={fetchInvoices} i={i} key={invoiceData._id}></MyInvoice>
                                     ))}
                                 </TableBody>
                             </Table>

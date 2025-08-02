@@ -31,7 +31,7 @@ const AllUsers = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`)
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`)
                 setDBuser(response.data)
                 setLoading(false);      // Start loading
                 setError(null);
@@ -51,7 +51,7 @@ const AllUsers = () => {
 
     const fetchUser = async () => {
         try {
-            const res = await axios.get("http://localhost:1000/usersCollection")
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`)
             setAllUsers(res.data)
             setLoading(true)
             setError(null)
@@ -70,7 +70,7 @@ const AllUsers = () => {
     }, [])
 
     const handleDeleteUser = (id) => {
-        fetch(`http://localhost:1000/usersCollection/${id}`, {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${id}`, {
             method: "DELETE",
             headers: {
 
@@ -88,7 +88,7 @@ const AllUsers = () => {
             })
     }
     const handleMakeAdmin = (id) => {
-        fetch(`http://localhost:1000/makeAdmin/usersCollection/${id}`, {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/makeAdmin/usersCollection/${id}`, {
             method: "PATCH",
             headers: {
 
@@ -106,7 +106,7 @@ const AllUsers = () => {
             })
     }
     const handleDeleteAdmin = (id) => {
-        fetch(`http://localhost:1000/deleteAdmin/usersCollection/${id}`, {
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/deleteAdmin/usersCollection/${id}`, {
             method: "PATCH",
             headers: {
 

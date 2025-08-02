@@ -51,7 +51,7 @@ const Signup = () => {
                     );
                     emailVerification()
 
-                    fetch("http://localhost:1000/usersCollection", {
+                    fetch(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`, {
                         method: "POST",
                         headers: {
                             "content-type": "application/json"
@@ -63,7 +63,7 @@ const Signup = () => {
                             
                             
                             const user = {email: data.email}
-                            axios.post('http://localhost:1000/jwt', user, {
+                            axios.post(`${import.meta.env.VITE_API_BASE_URL}/jwt`, user, {
                                 withCredentials: true
                             })
                                 .then(res => {})

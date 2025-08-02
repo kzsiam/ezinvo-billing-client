@@ -30,7 +30,7 @@ const Login = () => {
       .then(() => {
         toast.success('welcome back')
         const user = { email: data.email }
-        axios.post('http://localhost:1000/jwt', user, {
+        axios.post(`${import.meta.env.VITE_API_BASE_URL}/jwt`, user, {
           withCredentials: true
         })
           .then(res => { })

@@ -31,7 +31,7 @@ const Navbar = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`http://localhost:1000/usersCollection/${user?.email}`,{withCredentials:true})
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`,{withCredentials:true})
                 setDBuser(response.data)
                 setError(null)
             }

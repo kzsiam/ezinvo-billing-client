@@ -5,7 +5,7 @@ const UseAdmin = (email) => {
         const [isAdminLoading, setIsAdminLoading] = useState(true)
      useEffect(() =>{
             if(email){
-                fetch(`http://localhost:1000/usersCollection/admin/${email}`)
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/admin/${email}`)
                 .then(res=> res.json())
                 .then(data =>{
                     

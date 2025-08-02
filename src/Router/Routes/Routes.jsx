@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'/pdfViewerPage/:id',
-                loader: ({params}) => fetch(`http://localhost:1000/invoiceCollections/invoice/${params.id
+                loader: ({params}) => fetch(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections/invoice/${params.id
                 }`),
                 element:<PDFViewerPage></PDFViewerPage>
             },

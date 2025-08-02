@@ -310,7 +310,7 @@ const CreateInvoice = () => {
                     email: user?.email
                 };
 
-                const res = await fetch('http://localhost:1000/invoiceCollections', {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`, {
                     method: "POST",
                     headers: {
                         "content-type": "application/json"
