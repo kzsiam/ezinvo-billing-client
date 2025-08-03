@@ -66,7 +66,7 @@ const PricingPlans = () => {
                 <div className="text-center mb-6">
                     <h2 className="text-3xl font-bold">Pricing Plans</h2>
                     <p className="text-gray-500">Start free and upgrade anytime as your team and projects grow</p>
-                    <div className="text-sm mt-2 text-blue-600 cursor-pointer">Monthly <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded">Annual Save 20% Off</span></div>
+                    <div className="text-sm mt-2 text-cyan-600 cursor-pointer">Monthly <span className="ml-2 bg-blue-100 text-cyan-700 px-2 py-1 rounded">Annual Save 20% Off</span></div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
                     {plans.map((plan, i) => (
@@ -79,14 +79,14 @@ const PricingPlans = () => {
                                 <p className="text-3xl font-bold">{plan.price} <span className="text-base font-normal">{plan.note}</span></p>
                                 <p className="text-sm text-gray-500 mb-4">{plan.users}</p>
                                 <Button
-                                    className={`w-full mb-4 ${plan.highlight ? "bg-blue-600 hover:bg-blue-700 cursor-pointer" : "bg-black hover:bg-gray-900"}`}
+                                    className={`w-full mb-4 ${plan.highlight ? "bg-cyan-700 hover:bg-cyan-700 cursor-pointer" : "bg-cyan-700 hover:bg-cyan-800"}`}
                                 >
                                     {plan.button}
                                 </Button>
                                 <ul className="space-y-2 text-sm text-gray-700">
                                     {plan.features.map((feature, i) => (
                                         <li key={i} className="flex items-start">
-                                            <span className="text-blue-600 mr-2">✓</span>
+                                            <span className="text-cyan-600 mr-2">✓</span>
                                             {feature}
                                         </li>
                                     ))}
@@ -96,7 +96,7 @@ const PricingPlans = () => {
                     ))}
                 </div>
                 <p className="text-sm mt-6 text-gray-500">
-                    Seeking for custom solutions and personalized support? <span className="text-blue-600 underline cursor-pointer">Contact sales</span>
+                    Seeking for custom solutions and personalized support? <span className="text-cyan-600 underline cursor-pointer">Contact sales</span>
                 </p>
             </div>
         </div>
