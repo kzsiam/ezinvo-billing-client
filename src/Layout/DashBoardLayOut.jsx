@@ -36,7 +36,7 @@ const DashBoardLayOut = () => {
                 <Link to={"/"} className="mb-5 mt-5 px-2" >Home</Link>
                 <Link to={"/dashboard"} className="mb-5 px-2">Dashboard</Link>
                 <Link to={"/dashboard/allUsers"} className="mb-5 px-2">All Users</Link>
-                <Link to={"/dashboard/sellerOrders"} className="mb-5 px-2">Reports</Link>
+                <Link to={"/dashboard/reports"}  className="mb-5 px-2">Reports</Link>
                 <Link onClick={logout} className="mb-5 px-2">Logout</Link>
             </div>
 

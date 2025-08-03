@@ -14,12 +14,20 @@ const MyInvoices = () => {
     const [invoiceList, setInvoiceList] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [searchEmail, setSearchEmail] = useState("")
 
-    
+
     const fetchInvoices = async () => {
 
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections/${user?.email}`, { withCredentials: true });
+            // const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections/${user?.email}`, { withCredentials: true });
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`, {
+                withCredentials: true,
+                params: {
+                    email: user?.email,
+                    search: searchEmail, // optional search filter
+                },
+            });
             setInvoiceList(response.data); // Set response data to state
             setLoading(false);      // Start loading
             setError(null);
@@ -37,7 +45,7 @@ const MyInvoices = () => {
         if (user?.email) {
             fetchInvoices()
         }
-    }, [user?.email])
+    }, [user?.email, searchEmail])
     if (loading) return <div className=' mt-60 flex justify-center items-center'>
         {/* <h1>loading....</h1> */}
         <RiseLoader />
@@ -47,18 +55,17 @@ const MyInvoices = () => {
         <div>
             <div className=" text-black p-6 lg:mx-62 mt-10 rounded-lg space-y-4">
                 <h1 className=' mt-10'>My Invoices</h1>
-
+                <div className="flex justify-start items-center gap-2">
+                    <Input onKeyUp={(e) => setSearchEmail(e.target.value)}
+                        placeholder="Filter emails..."
+                        className="w-64  border-zinc-700  placeholder:text-zinc-400"
+                    />
+                </div>
 
                 {
                     invoiceList.length === 0 ?
                         <p className="text-center text-gray-500 mt-4">No invoices found.</p> : <>
-                            <div className="flex justify-start items-center gap-2">
-                                <Input
-                                    placeholder="Filter emails..."
-                                    className="w-64  border-zinc-700  placeholder:text-zinc-400"
-                                />
-                                <Button className="cursor-pointer">Search</Button>
-                            </div>
+
                             <Table className="border  rounded-lg">
                                 <TableHeader>
                                     <TableRow>

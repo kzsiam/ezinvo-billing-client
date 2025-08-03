@@ -8,7 +8,7 @@ import { Link } from 'react-router';
 import useTitle from '@/hooks/useTitle';
 
 const Home = () => {
-  useTitle('Home')
+  useTitle("Home")
   return (
     <div className='mt-20'>
       <div className="bg-white py-16 px-4 mx-auto flex justify-center items-center text-center  ">

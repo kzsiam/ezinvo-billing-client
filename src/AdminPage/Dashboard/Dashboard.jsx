@@ -3,103 +3,181 @@ import useTitle from '@/hooks/useTitle';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { FaUsers } from "react-icons/fa";
+import { LiaFileInvoiceSolid } from "react-icons/lia";
+import { MdPaid,MdPayment } from "react-icons/md";
+
 
 const Dashboard = () => {
     useTitle('Dashboard')
-    const pieData = [
-        { name: "Income", value: 8000 },
-        { name: "Expand", value: 9000 },
-        { name: "Booking", value: 7000 },
-    ];
 
-    const barData = [
-        { name: "Jan", hot: 4570, warm: 3000, traffic: 4570 },
-        { name: "Feb", hot: 4570, warm: 2000, traffic: 3000 },
-        { name: "Mar", hot: 2000, warm: 2780, traffic: 2500 },
-        { name: "Apr", hot: 1890, warm: 4800, traffic: 2400 },
-        { name: "May", hot: 2390, warm: 3800, traffic: 2500 },
-        { name: "Jun", hot: 3490, warm: 4300, traffic: 2100 },
-    ];
-
-     const [dbUser, setDBuser] = useState([])
-
-    const fetchUsers = async() =>{
-        try{
+    const [dbUser, setDBuser] = useState([])
+    const fetchUsers = async () => {
+        try {
             const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`)
             setDBuser(response.data)
         }
-        catch(error){
+        catch (error) {
             console.error(error)
         }
-        
+
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         fetchUsers()
-    },[])
+    }, [])
 
     const [paidInvoice, setPaidInvoice] = useState([])
 
-    const fetchPaidInvoice = async() =>{
-        try{
+    const fetchPaidInvoice = async () => {
+        try {
             const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/allPaidData`)
             setPaidInvoice(response.data)
         }
-        catch(error){
+        catch (error) {
             console.error(error)
         }
-        
+
     }
-    useEffect(() =>{
+    useEffect(() => {
         fetchPaidInvoice()
-    },[])
-
-
-    const totalPaid = paidInvoice.reduce((sum, invoice) => sum + invoice.grandTotal, 0);
-
-    
+    }, [])
 
 
 
-     const [invoiceCollections, setInvoiceCollections] = useState([])
 
-    const fetchInvoices = async() =>{
-        try{
+    //pie chart data
+    const pieData = [];
+    // const COLORS = ["#00C49F", "#FF8042", "#0088FE", "#FFBB28"];
+
+    const summary = {};
+
+    paidInvoice?.forEach(invoice => {
+        const name = invoice.clientsCompanyName || "Unknown";
+        const total = invoice.grandTotal || 0;
+
+        if (!summary[name]) {
+            summary[name] = 0;
+        }
+
+        summary[name] += total;
+    });
+
+    for (const client in summary) {
+        pieData.push({ name: client, value: summary[client] });
+    }
+
+
+
+
+    const [invoiceCollections, setInvoiceCollections] = useState([])
+
+    const fetchInvoices = async () => {
+        try {
             const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`)
             setInvoiceCollections(response.data)
         }
-        catch(error){
+        catch (error) {
             console.error(error)
         }
-        
+
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         fetchInvoices()
-    },[])
+    }, [])
+
+    const totalPaid = paidInvoice.reduce((sum, invoice) => sum + invoice.grandTotal, 0);
+
+
+    const totalGrandAmount = invoiceCollections.reduce((sum, invoice) => {
+        return sum + (invoice.grandTotal || 0);
+    }, 0);
+
+    const dueAmount = totalGrandAmount - totalPaid;
+
+    //barchart data 
+    const generateMonthlyBarData = (invoices) => {
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        const summary = {};
+
+        invoices.forEach(invoice => {
+            const [day, month, year] = invoice.issueDate.split('-'); // "29-07-25"
+            const monthIndex = parseInt(month) - 1;
+            const monthName = monthNames[monthIndex];
+
+            if (!summary[monthName]) {
+                summary[monthName] = 0;
+            }
+
+            summary[monthName] += 1;
+        });
+
+        const barData = Object.keys(summary).map(month => ({
+            name: month,
+            invoices: summary[month]
+        }));
+
+        return barData;
+    };
+    const monthlyBarData = generateMonthlyBarData(invoiceCollections);
+    const COLORS = [
+        "#f97316", // orange
+        "#facc15", // yellow
+        "#a855f7", // purple
+        "#10b981", // green
+        "#3b82f6", // blue
+        "#ef4444", // red
+        "#8b5cf6", // violet
+        "#14b8a6", // teal
+        "#ec4899", // pink
+        "#84cc16", // lime
+        "#f59e0b", // amber
+        "#6b7280"  // gray
+    ];
 
     return (
         <div className='mx-20'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10 mt-10'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 mt-10'>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground mb-2">Total Users</div>
-                        <div className="text-xl font-semibold">{dbUser.length}</div>
-                        
+                        <div className="text-xl text-center   mb-2">Total Users </div>
+                        <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
+                                {dbUser.length}
+                                <FaUsers />
+                        </div>
+
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground mb-2">Total Invoices</div>
-                        <div className="text-xl font-semibold">{invoiceCollections.length}</div>
-                       
+                        <div className="text-xl text-center  mb-2">Total Invoices</div>
+                         <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
+                                {invoiceCollections.length}
+                                <LiaFileInvoiceSolid />
+                        </div>
+
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <div className="text-sm text-muted-foreground mb-2">Amount Paid</div>
-                        <div className="text-xl font-semibold">$ {totalPaid}</div>
-                        
+                        <div className="text-xl text-center  mb-2">Amount Paid</div>
+                        <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
+                                {totalPaid}
+                                <MdPaid />
+                        </div>
+
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="text-xl text-center  mb-2">Due Amount</div>
+                        <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
+                                {dueAmount}
+                                <MdPayment />
+                        </div>
+
                     </CardContent>
                 </Card>
             </div>
@@ -107,16 +185,18 @@ const Dashboard = () => {
                 {/* Bar Chart */}
                 <Card>
                     <CardContent className="p-4">
-                        <h2 className="text-sm font-semibold mb-4">Cashflow Summary</h2>
+                        <h2 className="text-xl font-semibold mb-4">Cashflow Summary</h2>
                         <ResponsiveContainer width="100%" height={250}>
-                            <BarChart data={barData}>
+                            <BarChart data={monthlyBarData}>
                                 <XAxis dataKey="name" />
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="hot" fill="#f97316" name="Hot lead" />
-                                <Bar dataKey="warm" fill="#facc15" name="Warm lead" />
-                                <Bar dataKey="traffic" fill="#a855f7" name="CRM Traffic" />
+                                <Bar dataKey="invoices" name="Invoices">
+                                    {monthlyBarData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </CardContent>
@@ -125,9 +205,9 @@ const Dashboard = () => {
                 {/* Pie Chart */}
                 <Card>
                     <CardContent className="p-4">
-                        <h2 className="text-sm font-semibold mb-4">Invoice By Amount</h2>
+                        <h2 className="font-semibold mb-4 text-xl ">Invoice By Company</h2>
                         <ResponsiveContainer width="100%" height={250}>
-                            <PieChart>
+                            <PieChart width={400} height={400}>
                                 <Pie
                                     data={pieData}
                                     dataKey="value"
@@ -137,18 +217,18 @@ const Dashboard = () => {
                                     outerRadius={80}
                                     label
                                 >
-                                    {pieData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} />
+                                    {pieData?.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
                             </PieChart>
                         </ResponsiveContainer>
-                        <div className="text-center text-lg font-semibold mt-2">$24,006</div>
+                        <div className="text-center text-lg font-semibold mt-2">{totalPaid}</div>
                         <div className="text-center text-sm text-muted-foreground">Business Spend</div>
                     </CardContent>
                 </Card>
             </div>
-            <div>
+            {/* <div>
                 <Card>
                     <CardContent className="p-4">
                         <h2 className="text-sm font-semibold mb-4">Best Performing Users</h2>
@@ -162,7 +242,7 @@ const Dashboard = () => {
                         </ul>
                     </CardContent>
                 </Card>
-            </div>
+            </div> */}
         </div>
     );
 };

@@ -18,6 +18,7 @@ import Dashboard from "@/AdminPage/Dashboard/Dashboard";
 import AdminRoute from "../AdminRoute/AdminRoute";
 import Success from "@/Pages/Payment/Success";
 import Cancel from "@/Pages/Payment/Cancel";
+import PageNotFound from "@/SharedPages/PageNotFound/PageNotFound";
 
 export const router = createBrowserRouter([
     {
@@ -84,7 +85,7 @@ export const router = createBrowserRouter([
     },
     {
         path:'*',
-        element:<h1>page not found</h1>
+        element:<PageNotFound></PageNotFound>
     },
     {
         path:'/success',

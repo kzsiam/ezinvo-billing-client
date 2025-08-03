@@ -28,6 +28,8 @@ const AllUsers = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [dbUser, setDBuser] = useState([])
+
+    const [searchEmail, setSearchEmail] = useState("")
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -51,7 +53,7 @@ const AllUsers = () => {
 
     const fetchUser = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`)
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection?search=${searchEmail}`)
             setAllUsers(res.data)
             setLoading(true)
             setError(null)
@@ -67,7 +69,7 @@ const AllUsers = () => {
 
     useEffect(() => {
         fetchUser()
-    }, [])
+    }, [searchEmail])
 
     const handleDeleteUser = (id) => {
         fetch(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${id}`, {
@@ -79,7 +81,7 @@ const AllUsers = () => {
         })
             .then(res => res.json())
             .then(data => {
-                
+
                 if (data.deletedCount > 0) {
                     fetchUser()
                     toast.success("deleted successfully")
@@ -97,7 +99,7 @@ const AllUsers = () => {
         })
             .then(res => res.json())
             .then(data => {
-                
+
                 if (data.modifiedCount > 0) {
                     fetchUser()
                     toast.success('Make Admin Successfully')
@@ -115,7 +117,7 @@ const AllUsers = () => {
         })
             .then(res => res.json())
             .then(data => {
-                
+
                 if (data.modifiedCount > 0) {
                     fetchUser()
                     toast.success('Delete Admin Successfully')
@@ -124,7 +126,8 @@ const AllUsers = () => {
             })
     }
 
-  
+    console.log(searchEmail)
+
 
     if (loading) return <div className=' mt-60 flex justify-center items-center'>
         {/* <h1>loading....</h1> */}
@@ -137,108 +140,114 @@ const AllUsers = () => {
 
     return (
         <div>
-            <h1 className='lg:mx-20 mt-10'>EzInvo Users</h1>
+            <h1 className='lg:mx-60 mt-10'>EzInvo Users</h1>
 
-            <div className=" text-black p-6 lg:mx-62 mt-10 rounded-lg space-y-4">
+            <div className=" text-black p-6 lg:mx-62 mt-0 rounded-lg space-y-4">
                 <div className="flex justify-start items-center gap-2">
-                    <Input
+                    <Input onKeyUp={(e) => setSearchEmail(e.target.value)}
                         placeholder="Filter emails..."
                         className="w-64  border-zinc-700  placeholder:text-zinc-400"
                     />
-                    <Button className="bg-cyan-700 hover:bg-cyan-600 cursor-pointer">Search</Button>
                 </div>
 
-                <Table className="border  rounded-lg">
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead >
-                                <h1 className="mx-5">#</h1>
-                            </TableHead>
-                            <TableHead>Name</TableHead>
-                            <TableHead className="cursor-pointer">Email ⬍</TableHead>
-                            <TableHead>User Type</TableHead>
-                            <TableHead />
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {allUsers.map((allUser, i) => (
-                            <TableRow key={allUser._id}>
-                                <TableCell>
-                                    <h1 className='mx-5'>{i + 1}</h1>
-                                </TableCell>
-                                <TableCell>
-                                    <div className='flex items-center gap-2'>
-                                        
-                                        <h1>{allUser.fullName}</h1>
-                                    </div>
+                {
+                    allUsers.length === 0 ? <p className="text-center text-gray-500 mt-4">No Users found.</p> : <>
+                        <Table className="border  rounded-lg">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead >
+                                        <h1 className="mx-5">#</h1>
+                                    </TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead className="cursor-pointer">Email ⬍</TableHead>
+                                    <TableHead>User Type</TableHead>
+                                    <TableHead />
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {allUsers.map((allUser, i) => (
+                                    <TableRow key={allUser._id}>
+                                        <TableCell>
+                                            <h1 className='mx-5'>{i + 1}</h1>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className='flex items-center gap-2'>
 
-                                </TableCell>
-                                <TableCell>{allUser.email}</TableCell>
-                                <TableCell>{allUser?.role}</TableCell>
-                                <TableCell className="text-right">
+                                                <h1>{allUser.fullName}</h1>
+                                            </div>
 
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <MoreHorizontal className="h-4 w-4 cursor-pointer " />
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="w-56" align="start">
-                                            <DropdownMenuLabel>
-                                                {/* Make admin */}
-                                                {
-                                                    allUser.role !== "admin"? <ConfirmationDialogue
-                                                    title="Make Admin?"
-                                                    message={`Are you sure you want to Make Admin ${allUser.fullName}? This action cannot be undone.`}
-                                                    onConfirm={() => handleMakeAdmin(allUser._id)}
-                                                    trigger={
-                                                        <Button className="bg-cyan-700 hover:bg-cyan-600s w-24 cursor-pointer" size="sm">
-                                                            Make Admin
-                                                        </Button>
-                                                    }
-                                                />:<ConfirmationDialogue
-                                                    title="Delete Admin?"
-                                                    message={`Are you sure you want to Delete Admin ${allUser.fullName}? This action cannot be undone.`}
-                                                    onConfirm={() => handleDeleteAdmin(allUser._id)}
-                                                    trigger={
-                                                        <Button className="bg-cyan-700 hover:bg-cyan-600s w-24 cursor-pointer" size="sm">
-                                                            Delete Admin
-                                                        </Button>
-                                                    }
-                                                />
-                                                }
+                                        </TableCell>
+                                        <TableCell>{allUser.email}</TableCell>
+                                        <TableCell>{allUser?.role}</TableCell>
+                                        <TableCell className="text-right">
 
-                                                
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <MoreHorizontal className="h-4 w-4 cursor-pointer " />
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent className="w-56" align="start">
+                                                    <DropdownMenuLabel>
+                                                        {/* Make admin */}
+                                                        {
+                                                            allUser.role !== "admin" ? <ConfirmationDialogue
+                                                                title="Make Admin?"
+                                                                message={`Are you sure you want to Make Admin ${allUser.fullName}? This action cannot be undone.`}
+                                                                onConfirm={() => handleMakeAdmin(allUser._id)}
+                                                                trigger={
+                                                                    <Button className="bg-cyan-700 hover:bg-cyan-600s w-24 cursor-pointer" size="sm">
+                                                                        Make Admin
+                                                                    </Button>
+                                                                }
+                                                            /> : <ConfirmationDialogue
+                                                                title="Delete Admin?"
+                                                                message={`Are you sure you want to Delete Admin ${allUser.fullName}? This action cannot be undone.`}
+                                                                onConfirm={() => handleDeleteAdmin(allUser._id)}
+                                                                trigger={
+                                                                    <Button className="bg-cyan-700 hover:bg-cyan-600s w-24 cursor-pointer" size="sm">
+                                                                        Delete Admin
+                                                                    </Button>
+                                                                }
+                                                            />
+                                                        }
 
-                                                {/* Delete admin */}
 
-                                            </DropdownMenuLabel>
-                                            <DropdownMenuLabel>
-                                                {/* Delete User */}
-                                                <ConfirmationDialogue
-                                                    title="Delete User?"
-                                                    message={`Are you sure you want to delete ${allUser.fullName}? This action cannot be undone.`}
-                                                    onConfirm={() => handleDeleteUser(allUser._id)}
-                                                    trigger={
-                                                        <Button className="bg-cyan-700 hover:bg-cyan-600 cursor-pointer" size="sm">
-                                                            Delete User
-                                                        </Button>
-                                                    }
-                                                />
-                                            </DropdownMenuLabel>
 
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                                                        {/* Delete admin */}
 
-                <div className="flex justify-end text-sm  pt-2">
-                    <div className="space-x-2">
-                        <Button variant="ghost" size="sm" className="cursor-pointer">Previous</Button>
-                        <Button variant="ghost" size="sm" className="cursor-pointer">Next</Button>
-                    </div>
-                </div>
+                                                    </DropdownMenuLabel>
+                                                    <DropdownMenuLabel>
+                                                        {/* Delete User */}
+                                                        <ConfirmationDialogue
+                                                            title="Delete User?"
+                                                            message={`Are you sure you want to delete ${allUser.fullName}? This action cannot be undone.`}
+                                                            onConfirm={() => handleDeleteUser(allUser._id)}
+                                                            trigger={
+                                                                <Button className="bg-cyan-700 hover:bg-cyan-600 cursor-pointer" size="sm">
+                                                                    Delete User
+                                                                </Button>
+                                                            }
+                                                        />
+                                                    </DropdownMenuLabel>
+
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+
+                        <div className="flex justify-end text-sm  pt-2">
+                            <div className="space-x-2">
+                                <Button variant="ghost" size="sm" className="cursor-pointer">Previous</Button>
+                                <Button variant="ghost" size="sm" className="cursor-pointer">Next</Button>
+                            </div>
+                        </div>
+
+                    </>
+                }
+
+
 
             </div>
         </div>
