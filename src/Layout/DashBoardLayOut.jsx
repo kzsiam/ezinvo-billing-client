@@ -76,9 +76,9 @@ const DashBoardLayOut = () => {
             </div>
 
             {/* Page content */}
-            <div className="flex-1 lg:ml-64 flex flex-col">
+            <div className="flex-1 lg:ml-64 flex flex-col ">
                 {/* Top bar */}
-                <header className="flex lg:justify-center justify-end items-center px-6 py-4 shadow-sm bg-white">
+                <header className="flex lg:justify-center justify-end fixed top-0 w-full items-center px-6 py-4 shadow-sm bg-white">
                     <h2 className="text-xl text-end font-bold">
                         Welcome to EzInvo Admin Dashboard
                     </h2>

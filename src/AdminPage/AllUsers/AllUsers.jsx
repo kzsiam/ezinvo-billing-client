@@ -139,7 +139,7 @@ const AllUsers = () => {
 
 
     return (
-        <div>
+        <div className='lg:mt-40 mt-20'>
             <h1 className='lg:mx-60 mt-10'>EzInvo Users</h1>
 
             <div className=" text-black p-6 lg:mx-62 mt-0 rounded-lg space-y-4">
