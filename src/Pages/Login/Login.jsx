@@ -33,7 +33,12 @@ const Login = () => {
         axios.post(`${import.meta.env.VITE_API_BASE_URL}/jwt`, user, {
           withCredentials: true
         })
-          .then(res => { })
+          .then(res => {
+            console.log(res.data.token)
+            if (res.data.token) {
+              localStorage.setItem("token", res.data.token)
+            }
+          })
         navigate(from, { replace: true })
 
       })

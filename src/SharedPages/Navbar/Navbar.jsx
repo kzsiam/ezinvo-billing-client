@@ -10,43 +10,48 @@ import { Menu, User, X } from 'lucide-react';
 import { Link } from 'react-router';
 import { AuthContext } from '@/Contexts/AuthProvider';
 
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 import { Avatar } from '@radix-ui/react-avatar';
 import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import UseAdmin from '../UseAdmin/UseAdmin';
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
 
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext)
     const [isAdmin] = UseAdmin(user?.email)
-    
+
 
     const [dbUser, setDBuser] = useState([])
     const [error, setError] = useState(null)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-
-
+    const [loading, setLoading] = useState(false); // Step 1
 
     useEffect(() => {
         const fetchUsers = async () => {
+            setLoading(true); // Step 2
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`,{withCredentials:true})
-                setDBuser(response.data)
-                setError(null)
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`,
+                    { withCredentials: true }
+                );
+                setDBuser(response.data);
+                setError(null);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setLoading(false); // Step 3
             }
-            catch (error) {
-                setError(error.message)
-            }
-
-        }
+        };
 
         if (user?.email) {
-            fetchUsers()
+            fetchUsers();
         }
-    }, [user?.email])
+    }, [user?.email]);
 
-   
+
 
 
 
@@ -86,9 +91,23 @@ const Navbar = () => {
                                             <Button className="cursor-pointer" variant="ghost" size="icon">
                                                 {/* <User className="w-5 h-5" /> */}
                                                 <Avatar>
-                                                    {
+                                                    {/* {
                                                         dbUser.profileImage ? <AvatarImage className="rounded-4xl hover:cursor-pointer" src={dbUser?.profileImage} /> : <AvatarFallback className="text-cyan-700 hover:cursor-pointer">{user?.displayName?.slice(0, 1).toUpperCase()}</AvatarFallback>
-                                                    }
+                                                    } */}
+                                                    {loading ? (
+                                                        <AiOutlineLoading3Quarters className="animate-spin text-2xl text-cyan-700" />
+                                                    ) : (
+                                                        dbUser?.profileImage ? (
+                                                            <AvatarImage
+                                                                className="rounded-4xl hover:cursor-pointer"
+                                                                src={dbUser.profileImage}
+                                                            />
+                                                        ) : (
+                                                            <AvatarFallback className="text-cyan-700 hover:cursor-pointer">
+                                                                {user?.displayName?.slice(0, 1).toUpperCase()}
+                                                            </AvatarFallback>
+                                                        )
+                                                    )}
 
                                                 </Avatar>
                                             </Button>

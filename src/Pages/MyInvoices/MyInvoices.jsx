@@ -21,7 +21,7 @@ const MyInvoices = () => {
 
         try {
             // const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections/${user?.email}`, { withCredentials: true });
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`, {
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/myInvoices`, {
                 withCredentials: true,
                 params: {
                     email: user?.email,
@@ -50,7 +50,7 @@ const MyInvoices = () => {
         {/* <h1>loading....</h1> */}
         <RiseLoader />
     </div>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div className='mt-40 text-center'>Error: {error}</div>;
     return (
         <div>
             <div className=" text-black p-6 lg:mx-62 mt-10 rounded-lg space-y-4">

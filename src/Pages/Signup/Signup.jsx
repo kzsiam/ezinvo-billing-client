@@ -66,7 +66,9 @@ const Signup = () => {
                             axios.post(`${import.meta.env.VITE_API_BASE_URL}/jwt`, user, {
                                 withCredentials: true
                             })
-                                .then(res => {})
+                                .then(res => {
+                                    
+                                })
                             navigate(from, { replace: true })
                         })
                     

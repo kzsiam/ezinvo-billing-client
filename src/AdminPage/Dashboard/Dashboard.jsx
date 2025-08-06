@@ -1,20 +1,27 @@
 import { Card, CardContent } from '@/components/ui/card';
 import useTitle from '@/hooks/useTitle';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Bar, BarChart, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { FaUsers } from "react-icons/fa";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
-import { MdPaid,MdPayment } from "react-icons/md";
+import { MdPaid, MdPayment } from "react-icons/md";
+import { AuthContext } from '@/Contexts/AuthProvider';
 
 
 const Dashboard = () => {
     useTitle('Dashboard')
+    const { user } = useContext(AuthContext)
+     const email = user?.email;
 
     const [dbUser, setDBuser] = useState([])
     const fetchUsers = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`)
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection`,{
+               
+                    params: { email },
+                    withCredentials: true
+            })
             setDBuser(response.data)
         }
         catch (error) {
@@ -25,13 +32,18 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchUsers()
-    }, [])
+    }, [email])
 
     const [paidInvoice, setPaidInvoice] = useState([])
 
     const fetchPaidInvoice = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/allPaidData`)
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/allPaidData`,
+                {
+                    params: { email },
+                    withCredentials: true
+                }
+            )
             setPaidInvoice(response.data)
         }
         catch (error) {
@@ -41,7 +53,7 @@ const Dashboard = () => {
     }
     useEffect(() => {
         fetchPaidInvoice()
-    }, [])
+    }, [email])
 
 
 
@@ -70,11 +82,14 @@ const Dashboard = () => {
 
 
 
-    const [invoiceCollections, setInvoiceCollections] = useState([])
-
+    const [invoiceCollections, setInvoiceCollections] = useState([]);
+   
     const fetchInvoices = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`)
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/invoiceCollections`, {
+                params: { email },
+                withCredentials: true
+            })
             setInvoiceCollections(response.data)
         }
         catch (error) {
@@ -85,7 +100,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         fetchInvoices()
-    }, [])
+    }, [email])
 
     const totalPaid = paidInvoice.reduce((sum, invoice) => sum + invoice.grandTotal, 0);
 
@@ -144,8 +159,8 @@ const Dashboard = () => {
                     <CardContent className="p-4">
                         <div className="text-xl text-center   mb-2">Total Users </div>
                         <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
-                                {dbUser.length}
-                                <FaUsers />
+                            {dbUser.length}
+                            <FaUsers />
                         </div>
 
                     </CardContent>
@@ -153,9 +168,9 @@ const Dashboard = () => {
                 <Card>
                     <CardContent className="p-4">
                         <div className="text-xl text-center  mb-2">Total Invoices</div>
-                         <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
-                                {invoiceCollections.length}
-                                <LiaFileInvoiceSolid />
+                        <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
+                            {invoiceCollections.length}
+                            <LiaFileInvoiceSolid />
                         </div>
 
                     </CardContent>
@@ -164,8 +179,8 @@ const Dashboard = () => {
                     <CardContent className="p-4">
                         <div className="text-xl text-center  mb-2">Amount Paid</div>
                         <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
-                                {totalPaid}
-                                <MdPaid />
+                            ${totalPaid}
+                            <MdPaid />
                         </div>
 
                     </CardContent>
@@ -174,8 +189,8 @@ const Dashboard = () => {
                     <CardContent className="p-4">
                         <div className="text-xl text-center  mb-2">Due Amount</div>
                         <div className="text-2xl font-semibold flex justify-center text-cyan-700 items-center gap-3">
-                                {dueAmount}
-                                <MdPayment />
+                            ${dueAmount}
+                            <MdPayment />
                         </div>
 
                     </CardContent>
@@ -223,7 +238,7 @@ const Dashboard = () => {
                                 </Pie>
                             </PieChart>
                         </ResponsiveContainer>
-                        <div className="text-center text-lg font-semibold mt-2">{totalPaid}</div>
+                        <div className="text-center text-lg font-semibold mt-2">${totalPaid}</div>
                         <div className="text-center text-sm text-muted-foreground">Business Spend</div>
                     </CardContent>
                 </Card>

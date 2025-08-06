@@ -24,10 +24,11 @@ const AllUsers = () => {
     useTitle('All Users')
 
     const { user } = useContext(AuthContext)
+    const email = user?.email;
     const [allUsers, setAllUsers] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [dbUser, setDBuser] = useState([])
+    const [, setDBuser] = useState([])
 
     const [searchEmail, setSearchEmail] = useState("")
     useEffect(() => {
@@ -53,7 +54,10 @@ const AllUsers = () => {
 
     const fetchUser = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection?search=${searchEmail}`)
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection?search=${searchEmail}`,{
+                    params: { email },
+                    withCredentials: true
+            })
             setAllUsers(res.data)
             setLoading(true)
             setError(null)

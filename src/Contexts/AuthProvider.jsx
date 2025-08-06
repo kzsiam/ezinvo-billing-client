@@ -31,9 +31,12 @@ const AuthProvider = ({children}) => {
         return sendEmailVerification(auth.currentUser)
     }
 
-    const signInEmail = (email,password) =>{
+    const signInEmail = async(email,password) =>{
         setLoader(true)
-       return  signInWithEmailAndPassword(auth,email,password)
+        const signUser = await signInWithEmailAndPassword(auth,email,password)
+        console.log(signUser)
+        return signUser
+    //    return  signInWithEmailAndPassword(auth,email,password)
     }
     useEffect(() =>{
         const unsubscribe = onAuthStateChanged(auth,currentUser =>{
