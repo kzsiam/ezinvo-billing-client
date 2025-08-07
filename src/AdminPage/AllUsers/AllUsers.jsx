@@ -34,7 +34,7 @@ const AllUsers = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`)
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/usersCollection/${user?.email}`,{withCredentials: true})
                 setDBuser(response.data)
                 setLoading(false);      // Start loading
                 setError(null);
